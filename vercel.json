@@ -1,0 +1,9 @@
+{
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "installCommand": "echo skip",
+  "rewrites": [
+    { "source": "/", "destination": "/TyCRM.html" },
+    { "source": "/(.*)", "destination": "/TyCRM.html" }
+  ]
+}
