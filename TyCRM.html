@@ -527,6 +527,9 @@
                     <template x-for="site in sites" :key="site"><option :value="site" x-text="site"></option></template>
                   </select>
                 </th>
+                <th class="text-left px-3 py-2 min-w-[160px] border-r border-gray-100 align-top">
+                  <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Activity (30d)</div>
+                </th>
                 <th class="px-3 py-2 min-w-[110px] align-top">
                   <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5" x-text="t('tbl_actions')"></div>
                   <button @click="ctfName='';ctfType='';ctfCompany='';ctfEmail='';ctfPhone='';ctfRep='';ctfProductLine='';ctfSite='';ctfNotes=''" class="text-xs text-brand-600 hover:text-brand-800 font-medium whitespace-nowrap" x-text="t('clear_filters')"></button>
@@ -574,6 +577,15 @@
                       <span x-show="!(c.sites||[]).length" class="text-gray-300 text-xs">—</span>
                     </div>
                   </td>
+                  <td class="px-3 py-2.5 whitespace-nowrap text-xs">
+                    <div class="flex items-center gap-1.5 mb-0.5">
+                      <button @click="interactionSearch=c.name; view='interactions'"
+                        :class="recentInteractionCount(c.id) > 0 ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'"
+                        class="font-semibold px-1.5 py-0.5 rounded-full transition-colors cursor-pointer"
+                        x-text="recentInteractionCount(c.id) + ' interaction' + (recentInteractionCount(c.id) === 1 ? '' : 's')"></button>
+                    </div>
+                    <p class="text-gray-400" x-text="'Last: ' + lastInteractionDate(c.id)"></p>
+                  </td>
                   <td class="px-3 py-2.5">
                     <div class="flex gap-1.5 whitespace-nowrap">
                       <button @click="editCustomer(c)" class="text-xs px-2.5 py-1 border border-gray-200 rounded-md hover:bg-gray-50 text-gray-600 transition-colors" x-text="t('edit')"></button>
@@ -583,7 +595,7 @@
                 </tr>
               </template>
               <tr x-show="filteredCustomers.length===0">
-                <td colspan="10" class="text-center py-12 text-gray-400" x-text="t('no_customers_found')"></td>
+                <td colspan="11" class="text-center py-12 text-gray-400" x-text="t('no_customers_found')"></td>
               </tr>
             </tbody>
           </table>
@@ -2919,6 +2931,15 @@ function app() {
     customerName(id) { const c = this.customers.find(c=>c.id==id); return c ? c.name : 'Unknown'; },
     customerType(id) { const c = this.customers.find(c=>c.id==id); return c ? c.type : ''; },
     userName(id) { const u = this.users.find(u=>u.id==id); return u ? u.name : 'Unknown'; },
+    recentInteractionCount(customerId) {
+      const cutoff = new Date(Date.now() - 30*24*60*60*1000).toISOString().slice(0,10);
+      return this.interactions.filter(i => i.customerId == customerId && i.date >= cutoff).length;
+    },
+    lastInteractionDate(customerId) {
+      const dates = this.interactions.filter(i => i.customerId == customerId).map(i => i.date).filter(Boolean);
+      if (!dates.length) return '—';
+      return dates.sort().reverse()[0];
+    },
 
     openCustomerProfile(c) { this.selectedCustomer = c; this.view = 'customerProfile'; },
     openCustomerProfileById(id) { const c = this.customers.find(c=>c.id==id); if(c) this.openCustomerProfile(c); },
