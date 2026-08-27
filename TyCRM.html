@@ -527,12 +527,17 @@
                     <template x-for="site in sites" :key="site"><option :value="site" x-text="site"></option></template>
                   </select>
                 </th>
-                <th class="text-left px-3 py-2 min-w-[160px] border-r border-gray-100 align-top">
+                <th class="text-left px-3 py-2 min-w-[180px] border-r border-gray-100 align-top">
                   <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Activity (30d)</div>
+                  <button @click="const r=$el.getBoundingClientRect(); ctfActivityX=r.left; ctfActivityY=r.bottom+4; ctfActivityOpen=!ctfActivityOpen"
+                    class="w-full flex items-center justify-between border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 bg-white hover:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500 whitespace-nowrap">
+                    <span x-text="ctfActivityStart||ctfActivityEnd ? (ctfActivityStart||'…')+' → '+(ctfActivityEnd||'…') : 'Any date'"></span>
+                    <svg class="w-3 h-3 text-gray-400 ml-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                  </button>
                 </th>
                 <th class="px-3 py-2 min-w-[110px] align-top">
                   <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5" x-text="t('tbl_actions')"></div>
-                  <button @click="ctfName='';ctfType='';ctfCompany='';ctfEmail='';ctfPhone='';ctfRep='';ctfProductLine='';ctfSite='';ctfNotes=''" class="text-xs text-brand-600 hover:text-brand-800 font-medium whitespace-nowrap" x-text="t('clear_filters')"></button>
+                  <button @click="ctfName='';ctfType='';ctfCompany='';ctfEmail='';ctfPhone='';ctfRep='';ctfProductLine='';ctfSite='';ctfNotes='';ctfActivityStart='';ctfActivityEnd='';ctfActivityOpen=false" class="text-xs text-brand-600 hover:text-brand-800 font-medium whitespace-nowrap" x-text="t('clear_filters')"></button>
                 </th>
               </tr>
             </thead>
@@ -1360,6 +1365,24 @@
     </div>
 
   </main>
+
+  <!-- Activity Date Range Dropdown -->
+  <div x-show="ctfActivityOpen" x-transition @click.outside="ctfActivityOpen=false"
+    :style="`position:fixed; top:${ctfActivityY}px; left:${ctfActivityX}px; z-index:9999;`"
+    class="bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-56" style="display:none">
+    <p class="text-xs font-semibold text-gray-500 mb-2">Last interaction between</p>
+    <div class="space-y-2">
+      <div>
+        <label class="text-xs text-gray-500 mb-0.5 block">From</label>
+        <input type="date" x-model="ctfActivityStart" class="w-full border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white" />
+      </div>
+      <div>
+        <label class="text-xs text-gray-500 mb-0.5 block">To</label>
+        <input type="date" x-model="ctfActivityEnd" class="w-full border border-gray-200 rounded px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white" />
+      </div>
+      <button @click="ctfActivityStart='';ctfActivityEnd='';ctfActivityOpen=false" class="w-full text-xs text-brand-600 hover:text-brand-800 font-medium pt-1 text-left">Clear</button>
+    </div>
+  </div>
 
   <!-- Import Preview Modal -->
   <div x-show="importPreviewModal" x-transition class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" style="display:none">
@@ -2807,6 +2830,11 @@ function app() {
     ctfProductLine: '',
     ctfSite: '',
     ctfNotes: '',
+    ctfActivityStart: '',
+    ctfActivityEnd: '',
+    ctfActivityOpen: false,
+    ctfActivityX: 0,
+    ctfActivityY: 0,
     interactionSearch: '',
     interactionTypeFilter: '',
     interactionRepFilter: '',
@@ -2892,7 +2920,12 @@ function app() {
         const mpl = !this.ctfProductLine || (c.productLines||[]).includes(this.ctfProductLine);
         const ms  = !this.ctfSite        || (c.sites||[]).includes(this.ctfSite);
         const mno = !this.ctfNotes       || (c.notes||'').toLowerCase().includes(this.ctfNotes.toLowerCase());
-        return matchSearch && matchType && matchRep && matchPL && mn && mt && mc && me && mp && mr && mpl && ms && mno;
+        const lastDate = this.lastInteractionDate(c.id);
+        const mad = (!this.ctfActivityStart && !this.ctfActivityEnd) ||
+          (lastDate !== '—' &&
+            (!this.ctfActivityStart || lastDate >= this.ctfActivityStart) &&
+            (!this.ctfActivityEnd   || lastDate <= this.ctfActivityEnd));
+        return matchSearch && matchType && matchRep && matchPL && mn && mt && mc && me && mp && mr && mpl && ms && mno && mad;
       });
     },
 
