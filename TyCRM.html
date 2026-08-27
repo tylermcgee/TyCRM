@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TyCRM</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   tailwind.config = {
     theme: {
@@ -29,7 +30,7 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased" x-data="app()" x-cloak>
+<body class="bg-gray-50 text-gray-900 antialiased" x-data="app()" x-init="init()" x-cloak>
 
 <!-- LOGIN -->
 <div x-show="view==='login'" class="min-h-screen flex items-center justify-center p-4" style="background-image:url('irewolede-PvwdlXqo85k-unsplash.jpg');background-size:cover;background-position:center">
@@ -46,7 +47,7 @@
     <div class="space-y-5">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1" x-text="t('login_username')"></label>
-        <input x-model="loginForm.username" type="text" :placeholder="t('login_username_placeholder')"
+        <input x-model="loginForm.email" type="email" :placeholder="t('login_username_placeholder')"
           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
           @keydown.enter="doLogin()" />
       </div>
@@ -1150,7 +1151,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-4 py-3 text-gray-600 font-mono text-xs" x-text="u.username"></td>
+                <td class="px-4 py-3 text-gray-600 font-mono text-xs" x-text="u.email"></td>
                 <td class="px-4 py-3">
                   <span :class="u.role==='admin'?'bg-purple-100 text-purple-700 border-purple-200':'bg-gray-100 text-gray-600 border-gray-200'" class="text-xs px-2 py-1 rounded-full border capitalize" x-text="u.role"></span>
                 </td>
@@ -2154,7 +2155,7 @@
     <div class="p-6 space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_full_name')"></label><input x-model="forms.user.name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
-        <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_username_form')"></label><input x-model="forms.user.username" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" :disabled="modal==='editUser'" :class="modal==='editUser'?'bg-gray-50 text-gray-400':''"/></div>
+        <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_username_form')"></label><input x-model="forms.user.email" type="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" :disabled="modal==='editUser'" :class="modal==='editUser'?'bg-gray-50 text-gray-400':''"/></div>
       </div>
       <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('tbl_role')"></label>
         <select x-model="forms.user.role" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
@@ -2253,8 +2254,8 @@ const tr = {
     nav_recommendations:'Recommendations', nav_price_targets:'Price Targets', nav_admin:'Admin',
     nav_user_admin:'User Admin', nav_site_admin:'Site Admin', nav_more:'More',
     sidebar_subtitle:'Grower & Customer Manager', change_password:'Change Password', sign_out:'Sign Out',
-    login_subtitle:'Grower & Customer Relationship Manager', login_username:'Username', login_password:'Password',
-    login_username_placeholder:'Enter your username', login_password_placeholder:'Enter your password', login_button:'Sign In',
+    login_subtitle:'Grower & Customer Relationship Manager', login_username:'Email', login_password:'Password',
+    login_username_placeholder:'Enter your email', login_password_placeholder:'Enter your password', login_button:'Sign In',
     search_placeholder:'Search customers to log an interaction...', search_hint:'Click to log an interaction · Call opens Microsoft Teams',
     search_no_results:'No customers found.', call_button:'Call', ask_louie:'Ask Louie...',
     dash_title:'Dashboard', dash_subtitle:'Your activity at a glance', dash_rec_btn:'Go to Recommendations',
@@ -2323,7 +2324,7 @@ const tr = {
     tbl_user:'User', tbl_username:'Username', tbl_role:'Role', tbl_assigned_customers:'Assigned Customers',
     you_indicator:'You', admin_customers_label:'customers',
     modal_add_user:'Add User', modal_edit_user:'Edit User',
-    lbl_full_name:'Full Name *', lbl_username_form:'Username *',
+    lbl_full_name:'Full Name *', lbl_username_form:'Email *',
     profile_customer_info:'Customer Information', dt_type:'Type', lbl_assigned_rep:'Assigned Rep', lbl_unassigned:'Unassigned', btn_log_pt:'Log Price Target',
     btn_add:'Add', site_admin_title:'Site Administration',
     site_admin_subtitle:'Manage locations and product lines available across the platform',
@@ -2335,8 +2336,8 @@ const tr = {
     nav_recommendations:'Recomendaciones', nav_price_targets:'Objetivos de Precio', nav_admin:'Admin',
     nav_user_admin:'Admin de Usuarios', nav_site_admin:'Admin del Sitio', nav_more:'Más',
     sidebar_subtitle:'Gestor de Productores y Clientes', change_password:'Cambiar Contraseña', sign_out:'Cerrar Sesión',
-    login_subtitle:'Gestión de Relaciones con Productores y Clientes', login_username:'Usuario', login_password:'Contraseña',
-    login_username_placeholder:'Ingresa tu usuario', login_password_placeholder:'Ingresa tu contraseña', login_button:'Iniciar Sesión',
+    login_subtitle:'Gestión de Relaciones con Productores y Clientes', login_username:'Email', login_password:'Contraseña',
+    login_username_placeholder:'Ingresa tu email', login_password_placeholder:'Ingresa tu contraseña', login_button:'Iniciar Sesión',
     search_placeholder:'Buscar clientes para registrar una interacción...', search_hint:'Clic para registrar una interacción · Llamar abre Microsoft Teams',
     search_no_results:'No se encontraron clientes.', call_button:'Llamar', ask_louie:'Preguntar a Louie...',
     dash_title:'Panel', dash_subtitle:'Tu actividad de un vistazo', dash_rec_btn:'Ir a Recomendaciones',
@@ -2405,7 +2406,7 @@ const tr = {
     tbl_user:'Usuario', tbl_username:'Nombre de Usuario', tbl_role:'Rol', tbl_assigned_customers:'Clientes Asignados',
     you_indicator:'Tú', admin_customers_label:'clientes',
     modal_add_user:'Agregar Usuario', modal_edit_user:'Editar Usuario',
-    lbl_full_name:'Nombre Completo *', lbl_username_form:'Nombre de Usuario *',
+    lbl_full_name:'Nombre Completo *', lbl_username_form:'Email *',
     profile_customer_info:'Información del Cliente', dt_type:'Tipo', lbl_assigned_rep:'Representante Asignado', lbl_unassigned:'Sin Asignar', btn_log_pt:'Registrar Precio Objetivo',
     btn_add:'Agregar', site_admin_title:'Administración del Sitio',
     site_admin_subtitle:'Gestionar ubicaciones y líneas de productos disponibles en la plataforma',
@@ -2417,8 +2418,8 @@ const tr = {
     nav_recommendations:'Recommandations', nav_price_targets:'Objectifs de prix', nav_admin:'Admin',
     nav_user_admin:'Admin utilisateurs', nav_site_admin:'Admin du site', nav_more:'Plus',
     sidebar_subtitle:'Gestionnaire de producteurs et clients', change_password:'Changer le mot de passe', sign_out:'Se déconnecter',
-    login_subtitle:'Gestion de la relation producteurs et clients', login_username:"Nom d'utilisateur", login_password:'Mot de passe',
-    login_username_placeholder:"Entrez votre nom d'utilisateur", login_password_placeholder:'Entrez votre mot de passe', login_button:'Se connecter',
+    login_subtitle:'Gestion de la relation producteurs et clients', login_username:'Email', login_password:'Mot de passe',
+    login_username_placeholder:'Entrez votre email', login_password_placeholder:'Entrez votre mot de passe', login_button:'Se connecter',
     search_placeholder:'Chercher des clients pour enregistrer une interaction...', search_hint:"Cliquer pour enregistrer · L'appel ouvre Microsoft Teams",
     search_no_results:'Aucun client trouvé.', call_button:'Appeler', ask_louie:'Demander à Louie...',
     dash_title:'Tableau de bord', dash_subtitle:"Votre activité en un coup d'œil", dash_rec_btn:'Voir les recommandations',
@@ -2487,7 +2488,7 @@ const tr = {
     tbl_user:'Utilisateur', tbl_username:"Nom d'utilisateur", tbl_role:'Rôle', tbl_assigned_customers:'Clients assignés',
     you_indicator:'Vous', admin_customers_label:'clients',
     modal_add_user:'Ajouter un utilisateur', modal_edit_user:'Modifier un utilisateur',
-    lbl_full_name:'Nom complet *', lbl_username_form:"Nom d'utilisateur *",
+    lbl_full_name:'Nom complet *', lbl_username_form:'Email *',
     profile_customer_info:'Informations client', dt_type:'Type', lbl_assigned_rep:'Représentant assigné', lbl_unassigned:'Non assigné', btn_log_pt:'Enregistrer un objectif de prix',
     btn_add:'Ajouter', site_admin_title:'Administration du site',
     site_admin_subtitle:'Gérer les emplacements et les gammes de produits disponibles sur la plateforme',
@@ -2499,8 +2500,8 @@ const tr = {
     nav_recommendations:'Empfehlungen', nav_price_targets:'Preisziele', nav_admin:'Admin',
     nav_user_admin:'Benutzerverwaltung', nav_site_admin:'Standortverwaltung', nav_more:'Mehr',
     sidebar_subtitle:'Erzeuger- und Kundenverwaltung', change_password:'Passwort ändern', sign_out:'Abmelden',
-    login_subtitle:'Erzeuger- und Kundenbeziehungsmanager', login_username:'Benutzername', login_password:'Passwort',
-    login_username_placeholder:'Benutzernamen eingeben', login_password_placeholder:'Passwort eingeben', login_button:'Anmelden',
+    login_subtitle:'Erzeuger- und Kundenbeziehungsmanager', login_username:'Email', login_password:'Passwort',
+    login_username_placeholder:'Email eingeben', login_password_placeholder:'Passwort eingeben', login_button:'Anmelden',
     search_placeholder:'Kunden suchen, um Interaktion zu protokollieren...', search_hint:'Klicken zum Protokollieren · Anruf öffnet Microsoft Teams',
     search_no_results:'Keine Kunden gefunden.', call_button:'Anrufen', ask_louie:'Louie fragen...',
     dash_title:'Dashboard', dash_subtitle:'Ihre Aktivitäten auf einen Blick', dash_rec_btn:'Zu Empfehlungen',
@@ -2569,7 +2570,7 @@ const tr = {
     tbl_user:'Benutzer', tbl_username:'Benutzername', tbl_role:'Rolle', tbl_assigned_customers:'Zugewiesene Kunden',
     you_indicator:'Sie', admin_customers_label:'Kunden',
     modal_add_user:'Benutzer hinzufügen', modal_edit_user:'Benutzer bearbeiten',
-    lbl_full_name:'Vollständiger Name *', lbl_username_form:'Benutzername *',
+    lbl_full_name:'Vollständiger Name *', lbl_username_form:'Email *',
     profile_customer_info:'Kundeninformationen', dt_type:'Typ', lbl_assigned_rep:'Zugewiesener Vertreter', lbl_unassigned:'Nicht zugewiesen', btn_log_pt:'Preisziel erfassen',
     btn_add:'Hinzufügen', site_admin_title:'Standortverwaltung',
     site_admin_subtitle:'Standorte und Produktlinien verwalten, die auf der Plattform verfügbar sind',
@@ -2581,8 +2582,8 @@ const tr = {
     nav_recommendations:'Recomendações', nav_price_targets:'Metas de Preço', nav_admin:'Admin',
     nav_user_admin:'Admin de Usuários', nav_site_admin:'Admin do Site', nav_more:'Mais',
     sidebar_subtitle:'Gerenciador de Produtores e Clientes', change_password:'Alterar Senha', sign_out:'Sair',
-    login_subtitle:'Gerenciador de Relacionamento com Produtores e Clientes', login_username:'Usuário', login_password:'Senha',
-    login_username_placeholder:'Digite seu usuário', login_password_placeholder:'Digite sua senha', login_button:'Entrar',
+    login_subtitle:'Gerenciador de Relacionamento com Produtores e Clientes', login_username:'Email', login_password:'Senha',
+    login_username_placeholder:'Digite seu email', login_password_placeholder:'Digite sua senha', login_button:'Entrar',
     search_placeholder:'Buscar clientes para registrar uma interação...', search_hint:'Clique para registrar · Ligar abre o Microsoft Teams',
     search_no_results:'Nenhum cliente encontrado.', call_button:'Ligar', ask_louie:'Perguntar ao Louie...',
     dash_title:'Painel', dash_subtitle:'Sua atividade em um relance', dash_rec_btn:'Ver Recomendações',
@@ -2651,7 +2652,7 @@ const tr = {
     tbl_user:'Usuário', tbl_username:'Nome de Usuário', tbl_role:'Função', tbl_assigned_customers:'Clientes Atribuídos',
     you_indicator:'Você', admin_customers_label:'clientes',
     modal_add_user:'Adicionar Usuário', modal_edit_user:'Editar Usuário',
-    lbl_full_name:'Nome Completo *', lbl_username_form:'Nome de Usuário *',
+    lbl_full_name:'Nome Completo *', lbl_username_form:'Email *',
     profile_customer_info:'Informações do Cliente', dt_type:'Tipo', lbl_assigned_rep:'Representante Atribuído', lbl_unassigned:'Não Atribuído', btn_log_pt:'Registrar Meta de Preço',
     btn_add:'Adicionar', site_admin_title:'Administração do Site',
     site_admin_subtitle:'Gerenciar locais e linhas de produtos disponíveis na plataforma',
@@ -2663,8 +2664,8 @@ const tr = {
     nav_recommendations:'推荐', nav_price_targets:'价格目标', nav_admin:'管理',
     nav_user_admin:'用户管理', nav_site_admin:'站点管理', nav_more:'更多',
     sidebar_subtitle:'种植者与客户管理器', change_password:'修改密码', sign_out:'退出登录',
-    login_subtitle:'种植者与客户关系管理器', login_username:'用户名', login_password:'密码',
-    login_username_placeholder:'请输入用户名', login_password_placeholder:'请输入密码', login_button:'登录',
+    login_subtitle:'种植者与客户关系管理器', login_username:'Email', login_password:'密码',
+    login_username_placeholder:'请输入Email', login_password_placeholder:'请输入密码', login_button:'登录',
     search_placeholder:'搜索客户以记录互动...', search_hint:'点击记录互动 · 拨打电话将打开 Microsoft Teams',
     search_no_results:'未找到客户。', call_button:'拨打', ask_louie:'询问 Louie...',
     dash_title:'仪表板', dash_subtitle:'一目了然的活动概览', dash_rec_btn:'查看推荐',
@@ -2733,7 +2734,7 @@ const tr = {
     tbl_user:'用户', tbl_username:'用户名', tbl_role:'角色', tbl_assigned_customers:'已分配客户',
     you_indicator:'您', admin_customers_label:'个客户',
     modal_add_user:'添加用户', modal_edit_user:'编辑用户',
-    lbl_full_name:'全名 *', lbl_username_form:'用户名 *',
+    lbl_full_name:'全名 *', lbl_username_form:'Email *',
     profile_customer_info:'客户信息', dt_type:'类型', lbl_assigned_rep:'负责代表', lbl_unassigned:'未分配', btn_log_pt:'记录价格目标',
     btn_add:'添加', site_admin_title:'站点管理',
     site_admin_subtitle:'管理平台上可用的地点和产品线',
@@ -2741,6 +2742,68 @@ const tr = {
     sa_product_lines:'产品线', sa_no_pl:'尚未配置产品线。', sa_new_pl_placeholder:'新产品线...'
   }
 };
+
+const _supa = supabase.createClient(
+  'https://rqonpwerastgmimyiygd.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxb25wd2VyYXN0Z21pbXlpeWdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NTI4MjAsImV4cCI6MjEwMzQyODgyMH0.cGYkYH_zziJb-2GW6KPgQvN6XiPiogtDGX9g76wJUro'
+);
+
+function toCamel(obj) {
+  if (!obj) return obj;
+  const res = {};
+  for (const [k, v] of Object.entries(obj))
+    res[k.replace(/_([a-z])/g, (_, c) => c.toUpperCase())] = v;
+  return res;
+}
+function toSnake(obj) {
+  if (!obj) return obj;
+  const res = {};
+  for (const [k, v] of Object.entries(obj))
+    res[k.replace(/([A-Z])/g, '_$1').toLowerCase()] = v;
+  return res;
+}
+function rowToInteraction(row) {
+  return {
+    id: row.id, customerId: row.customer_id, type: row.type,
+    summary: row.summary, notes: row.notes, date: row.date,
+    user: row.user_name, commodity: row.commodity,
+    priceTarget: row.price_target, symbolYear: row.symbol_year,
+    volume: row.volume, season: row.season,
+    followUpCheck: row.follow_up_check, followUpDays: row.follow_up_days,
+    spring_plantingIntentCorn: row.spring_planting_intent_corn,
+    spring_plantingStartDate: row.spring_planting_start_date,
+    spring_soilMoisture: row.spring_soil_moisture,
+    summer_midseasonActivities: row.summer_midseason_activities,
+    summer_cropHealthPests: row.summer_crop_health_pests,
+    summer_soilMoisture: row.summer_soil_moisture,
+    fall_grainMoisture: row.fall_grain_moisture,
+    fall_harvestStartDate: row.fall_harvest_start_date,
+    fall_cropQuality: row.fall_crop_quality,
+    fall_estimatedYield: row.fall_estimated_yield,
+  };
+}
+function interactionToRow(f, userName) {
+  return {
+    customer_id: parseInt(f.customerId),
+    type: f.type, summary: f.summary, notes: f.notes, date: f.date,
+    user_name: userName,
+    commodity: f.commodity,
+    price_target: f.priceTarget ? parseFloat(f.priceTarget) : null,
+    symbol_year: f.symbolYear, volume: f.volume, season: f.season,
+    follow_up_check: f.followUpCheck || false,
+    follow_up_days: f.followUpDays ? parseInt(f.followUpDays) : null,
+    spring_planting_intent_corn: f.spring_plantingIntentCorn,
+    spring_planting_start_date: f.spring_plantingStartDate,
+    spring_soil_moisture: f.spring_soilMoisture,
+    summer_midseason_activities: f.summer_midseasonActivities,
+    summer_crop_health_pests: f.summer_cropHealthPests,
+    summer_soil_moisture: f.summer_soilMoisture,
+    fall_grain_moisture: f.fall_grainMoisture,
+    fall_harvest_start_date: f.fall_harvestStartDate,
+    fall_crop_quality: f.fall_cropQuality,
+    fall_estimated_yield: f.fall_estimatedYield,
+  };
+}
 
 function app() {
   const SEED_USERS = [
@@ -2790,23 +2853,22 @@ function app() {
     ]
   };
 
-  function load(key, def) {
+  function loadLocal(key, def) {
     try { const v = localStorage.getItem('tycrm_'+key); return v ? JSON.parse(v) : def; }
     catch { return def; }
   }
-  function save(key, val) { localStorage.setItem('tycrm_'+key, JSON.stringify(val)); }
-  function nextId(arr) { return arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1; }
+  function saveLocal(key, val) { localStorage.setItem('tycrm_'+key, JSON.stringify(val)); }
 
   return {
-    lang: load('lang','en'),
+    lang: loadLocal('lang','en'),
     tr,
     t(key) { return ((this.tr[this.lang]||this.tr['en'])[key]) || (this.tr['en'][key] || key); },
-    setLang(l) { this.lang = l; try { save('lang', l); } catch(e) {} },
+    setLang(l) { this.lang = l; try { saveLocal('lang', l); } catch(e) {} },
     view: 'login',
     currentUser: null,
     selectedCustomer: null,
     modal: null,
-    loginForm: { username:'', password:'' },
+    loginForm: { email:'', password:'' },
     loginError: '',
     globalSearch: '',
     showGlobalDropdown: false,
@@ -2848,14 +2910,14 @@ function app() {
     passwordResetError: '',
     changePasswordError: '',
     changePasswordSuccess: false,
-    users: load('users', SEED_USERS),
-    customers: load('customers', SEED.customers),
-    interactions: load('interactions', SEED.interactions),
-    todos: load('todos', SEED.todos),
-    recommendations: load('recommendations', SEED.recommendations),
-    priceTargets: load('priceTargets', SEED.priceTargets),
-    sites: load('sites', ['Claypool','Grand Junction','Upper Sandusky','Burns Harbor','Cahokia','Port Allen','Natchez','Rosedale','West Memphis','Wilton','Seattle','Kansas City']),
-    productLines: load('productLines', ['Corn','Soybeans','Meal','Soybean Oil','DDG','Ethanol','Biodiesel']),
+    users: [],
+    customers: [],
+    interactions: [],
+    todos: [],
+    recommendations: [],
+    priceTargets: [],
+    sites: [],
+    productLines: [],
     siteAdminNewSite: '', siteAdminEditSiteIdx: null, siteAdminEditSiteVal: '',
     siteAdminNewPL: '', siteAdminEditPLIdx: null, siteAdminEditPLVal: '',
     nukeCustomerPw: '', nukeCustomerError: '',
@@ -2877,7 +2939,7 @@ function app() {
       interaction: { customerId:'', type:'call', summary:'', notes:'', date: new Date().toISOString().slice(0,10), commodity:'', priceTarget:'', symbolYear:'', volume:'', season:'spring', spring_plantingIntentCorn:50, spring_plantingStartDate:'', spring_soilMoisture:'', summer_midseasonActivities:'', summer_cropHealthPests:'', summer_soilMoisture:'', fall_grainMoisture:'', fall_harvestStartDate:'', fall_cropQuality:'', fall_estimatedYield:'' },
       todo: { customerId:'', title:'', notes:'', dueDate:'', priority:'medium' },
       priceTarget: { customerId:'', commodity:'', targetPrice:'', symbolYear:'', volume:'', notes:'' },
-      user: { id:null, name:'', username:'', role:'rep', password:'', productLines:[], sites:[] },
+      user: { id:null, name:'', email:'', role:'rep', password:'', productLines:[], sites:[] },
       passwordReset: { targetId:null, targetName:'', newPassword:'', confirmPassword:'' },
       changePassword: { current:'', newPassword:'', confirm:'' }
     },
@@ -3005,60 +3067,57 @@ function app() {
       const arr = [...this.sites];
       arr.splice(newIdx, 0, arr.splice(oldIdx, 1)[0]);
       this.sites = arr;
-      save('sites', this.sites);
     },
     reorderProductLines(oldIdx, newIdx) {
       this.siteAdminEditPLIdx = null;
       const arr = [...this.productLines];
       arr.splice(newIdx, 0, arr.splice(oldIdx, 1)[0]);
       this.productLines = arr;
-      save('productLines', this.productLines);
     },
-    addSite() {
+    async addSite() {
       const v = this.siteAdminNewSite.trim();
       if (!v || this.sites.includes(v)) return;
       this.siteAdminNewSite = '';
+      await _supa.from('sites').insert({ name: v });
       this.sites = [...this.sites, v];
-      save('sites', this.sites);
     },
-    removeSite(idx) {
+    async removeSite(idx) {
+      const name = this.sites[idx];
+      await _supa.from('sites').delete().eq('name', name);
       this.sites = this.sites.filter((_, i) => i !== idx);
-      save('sites', this.sites);
     },
     startEditSite(idx) { this.siteAdminEditSiteIdx = idx; this.siteAdminEditSiteVal = this.sites[idx]; },
-    saveEditSite(idx) {
+    async saveEditSite(idx) {
       const v = this.siteAdminEditSiteVal.trim();
       if (!v) return;
       const old = this.sites[idx];
       this.siteAdminEditSiteIdx = null;
+      await _supa.from('sites').update({ name: v }).eq('name', old);
       this.sites = this.sites.map((s, i) => i === idx ? v : s);
       this.customers = this.customers.map(c => ({ ...c, sites: (c.sites||[]).map(s => s === old ? v : s) }));
-      save('sites', this.sites);
-      save('customers', this.customers);
     },
-    addProductLine() {
+    async addProductLine() {
       const v = this.siteAdminNewPL.trim();
       if (!v || this.productLines.includes(v)) return;
       this.siteAdminNewPL = '';
+      await _supa.from('product_lines').insert({ name: v });
       this.productLines = [...this.productLines, v];
-      save('productLines', this.productLines);
     },
-    removeProductLine(idx) {
+    async removeProductLine(idx) {
+      const name = this.productLines[idx];
+      await _supa.from('product_lines').delete().eq('name', name);
       this.productLines = this.productLines.filter((_, i) => i !== idx);
-      save('productLines', this.productLines);
     },
     startEditPL(idx) { this.siteAdminEditPLIdx = idx; this.siteAdminEditPLVal = this.productLines[idx]; },
-    saveEditPL(idx) {
+    async saveEditPL(idx) {
       const v = this.siteAdminEditPLVal.trim();
       if (!v) return;
       const old = this.productLines[idx];
       this.siteAdminEditPLIdx = null;
+      await _supa.from('product_lines').update({ name: v }).eq('name', old);
       this.productLines = this.productLines.map((p, i) => i === idx ? v : p);
       this.customers = this.customers.map(c => ({ ...c, productLines: (c.productLines||[]).map(p => p === old ? v : p) }));
       this.users = this.users.map(u => ({ ...u, productLines: (u.productLines||[]).map(p => p === old ? v : p) }));
-      save('productLines', this.productLines);
-      save('customers', this.customers);
-      save('users', this.users);
     },
 
     exportPriceTargetsCSV() {
@@ -3128,44 +3187,52 @@ function app() {
       };
       reader.readAsText(file);
     },
-    confirmImport() {
+    async confirmImport() {
       if (this.importType === 'customer') {
         const newOnes = this.importPreview.map(row => ({
-          id: null, name: row.name||'', type: (row.type||'grower').toLowerCase(),
+          name: row.name||'', type: (row.type||'grower').toLowerCase(),
           company: row.company||'', email: row.email||'', phone: row.phone||'',
-          atlasId: row.atlasId||'', cinchId: row.cinchId||'', mdmId: row.mdmId||'',
+          atlas_id: row.atlasId||'', cinch_id: row.cinchId||'', mdm_id: row.mdmId||'',
           street: row.street||'', city: row.city||'', state: row.state||'',
-          county: row.county||'', zip: row.zip||'', location: '', notes: row.notes||'',
-          assignedTo: null, parentId: null, productLines: [], sites: []
+          county: row.county||'', zip: row.zip||'', notes: row.notes||'',
+          assigned_to: null, parent_id: null, product_lines: [], sites: []
         })).filter(c => c.name);
-        newOnes.forEach(c => { c.id = nextId(this.customers); this.customers.push(c); });
-        save('customers', this.customers);
+        if (newOnes.length) {
+          const { data } = await _supa.from('customers').insert(newOnes).select();
+          if (data) this.customers.push(...data.map(toCamel));
+        }
       } else if (this.importType === 'interaction') {
+        const today = new Date().toISOString().slice(0,10);
         const newOnes = this.importPreview.map(row => {
           const cust = this.customers.find(c => c.name.toLowerCase() === (row.customerName||'').toLowerCase());
           return {
-            id: null, customerId: cust ? cust.id : null,
-            type: row.type||'call', date: row.date||new Date().toISOString().slice(0,10),
+            customer_id: cust ? cust.id : null,
+            type: row.type||'call', date: row.date||today,
             summary: row.summary||'', commodity: row.commodity||'',
-            priceTarget: row.priceTarget||'', symbolYear: row.symbolYear||'',
+            price_target: row.priceTarget ? parseFloat(row.priceTarget) : null,
+            symbol_year: row.symbolYear||'',
             volume: row.volume||'', notes: row.notes||'',
-            user: this.currentUser?.name||''
+            user_name: this.currentUser?.name||''
           };
         }).filter(i => i.summary);
-        newOnes.forEach(i => { i.id = nextId(this.interactions); this.interactions.push(i); });
-        save('interactions', this.interactions);
+        if (newOnes.length) {
+          const { data } = await _supa.from('interactions').insert(newOnes).select();
+          if (data) this.interactions.unshift(...data.map(rowToInteraction));
+        }
       }
       this.importPreviewModal = false;
     },
-    nukeCustomers() {
+    async nukeCustomers() {
       if (this.nukeCustomerPw !== 'trust no one') { this.nukeCustomerError = 'Incorrect password.'; return; }
-      this.customers = []; save('customers', []);
+      await _supa.from('customers').delete().neq('id', 0);
+      this.customers = [];
       this.nukeCustomerPw = ''; this.nukeCustomerError = '';
       alert('All customer data has been erased.');
     },
-    nukeInteractions() {
+    async nukeInteractions() {
       if (this.nukeInteractionPw !== 'trust no one') { this.nukeInteractionError = 'Incorrect password.'; return; }
-      this.interactions = []; save('interactions', []);
+      await _supa.from('interactions').delete().neq('id', 0);
+      this.interactions = [];
       this.nukeInteractionPw = ''; this.nukeInteractionError = '';
       alert('All interaction data has been erased.');
     },
@@ -3265,14 +3332,72 @@ function app() {
       return `https://teams.microsoft.com/l/call/0/0?users=4:${encodeURIComponent(e164)}`;
     },
 
-    doLogin() {
-      const u = this.users.find(u => u.username===this.loginForm.username && u.password===this.loginForm.password);
-      if (!u) { this.loginError = 'Invalid username or password'; return; }
-      this.currentUser = {...u};
+    async init() {
+      const { data: { session } } = await _supa.auth.getSession();
+      if (session) {
+        await this._loadProfile(session.user);
+        await this._loadAllData();
+        this.view = 'dashboard';
+      }
+      _supa.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_OUT') { this.currentUser = null; this.view = 'login'; }
+      });
+    },
+    async _loadProfile(authUser) {
+      const { data: profile } = await _supa.from('profiles').select('*').eq('id', authUser.id).single();
+      if (profile) {
+        this.currentUser = { id: profile.id, name: profile.name, email: authUser.email, role: profile.role, productLines: profile.product_lines || [], sites: profile.sites || [] };
+      } else {
+        const name = (authUser.email || '').split('@')[0];
+        await _supa.from('profiles').insert({ id: authUser.id, name, role: 'rep', email: authUser.email });
+        this.currentUser = { id: authUser.id, name, email: authUser.email, role: 'rep', productLines: [], sites: [] };
+      }
+    },
+    async _loadAllData() {
+      const [
+        { data: customers }, { data: interactions }, { data: todos },
+        { data: recommendations }, { data: priceTargets },
+        { data: sites }, { data: productLines }, { data: profiles }
+      ] = await Promise.all([
+        _supa.from('customers').select('*').order('name'),
+        _supa.from('interactions').select('*').order('date', { ascending: false }),
+        _supa.from('todos').select('*').order('due_date'),
+        _supa.from('recommendations').select('*'),
+        _supa.from('price_targets').select('*'),
+        _supa.from('sites').select('name').order('name'),
+        _supa.from('product_lines').select('name').order('name'),
+        _supa.from('profiles').select('*'),
+      ]);
+      this.customers = (customers || []).map(toCamel);
+      this.interactions = (interactions || []).map(rowToInteraction);
+      this.todos = (todos || []).map(toCamel);
+      this.recommendations = (recommendations || []).map(toCamel);
+      this.priceTargets = (priceTargets || []).map(toCamel);
+      this.sites = (sites || []).map(s => s.name);
+      this.productLines = (productLines || []).map(p => p.name);
+      this.users = (profiles || []).map(p => ({ id: p.id, name: p.name, email: p.email, role: p.role, productLines: p.product_lines || [], sites: p.sites || [] }));
+      if (!this.sites.length) {
+        const defs = ['Claypool','Grand Junction','Upper Sandusky','Burns Harbor','Cahokia','Port Allen','Natchez','Rosedale','West Memphis','Wilton','Seattle','Kansas City'];
+        await _supa.from('sites').insert(defs.map(name => ({ name })));
+        this.sites = defs;
+      }
+      if (!this.productLines.length) {
+        const defs = ['Corn','Soybeans','Meal','Soybean Oil','DDG','Ethanol','Biodiesel'];
+        await _supa.from('product_lines').insert(defs.map(name => ({ name })));
+        this.productLines = defs;
+      }
+    },
+
+    async doLogin() {
       this.loginError = '';
+      const { error } = await _supa.auth.signInWithPassword({ email: this.loginForm.email, password: this.loginForm.password });
+      if (error) { this.loginError = 'Invalid email or password'; return; }
+      const { data: { session } } = await _supa.auth.getSession();
+      await this._loadProfile(session.user);
+      await this._loadAllData();
       this.view = 'dashboard';
     },
-    doLogout() { this.currentUser=null; this.view='login'; this.loginForm={username:'',password:''}; },
+    async doLogout() { await _supa.auth.signOut(); this.currentUser = null; this.view = 'login'; this.loginForm = { email: '', password: '' }; },
 
     openModal(name) {
       this.validationError = '';
@@ -3284,7 +3409,7 @@ function app() {
       if (name==='addInteraction') this.forms.interaction = {customerId:'',type:'call',summary:'',notes:'',date:new Date().toISOString().slice(0,10),followUpCheck:false,followUpDays:7,commodity:'',priceTarget:'',symbolYear:'',volume:'',season:'spring',spring_plantingIntentCorn:50,spring_plantingStartDate:'',spring_soilMoisture:'',summer_midseasonActivities:'',summer_cropHealthPests:'',summer_soilMoisture:'',fall_grainMoisture:'',fall_harvestStartDate:'',fall_cropQuality:'',fall_estimatedYield:''};
       if (name==='addTodo') this.forms.todo = {customerId:'',title:'',notes:'',dueDate:'',priority:'medium'};
       if (name==='addPriceTarget') this.forms.priceTarget = {customerId:'',commodity:'',targetPrice:'',symbolYear:'',volume:'',notes:''};
-      if (name==='addUser') this.forms.user = {id:null,name:'',username:'',role:'rep',password:'',productLines:[],sites:[]};
+      if (name==='addUser') this.forms.user = {id:null,name:'',email:'',role:'rep',password:'',productLines:[],sites:[]};
       if (name==='changePassword') this.forms.changePassword = {current:'',newPassword:'',confirm:''};
       this.modal = name;
     },
@@ -3294,31 +3419,35 @@ function app() {
       this.modal='editCustomer';
     },
 
-    saveCustomer() {
+    async saveCustomer() {
       const missing = [];
       if (!this.forms.customer.name) missing.push('Name');
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
-      const data = {...this.forms.customer, assignedTo: this.forms.customer.assignedTo ? parseInt(this.forms.customer.assignedTo) : null, parentId: this.forms.customer.parentId ? parseInt(this.forms.customer.parentId) : null};
-      if (data.id) {
-        const idx = this.customers.findIndex(c=>c.id===data.id);
-        if (idx>-1) {
-          this.customers[idx] = data;
-          if (this.selectedCustomer?.id === data.id) this.selectedCustomer = data;
+      const f = this.forms.customer;
+      const row = toSnake({ ...f, assignedTo: f.assignedTo || null, parentId: f.parentId ? parseInt(f.parentId) : null });
+      delete row.id;
+      if (f.id) {
+        const { data } = await _supa.from('customers').update(row).eq('id', f.id).select().single();
+        if (data) {
+          const updated = toCamel(data);
+          const idx = this.customers.findIndex(c => c.id === f.id);
+          if (idx > -1) this.customers[idx] = updated;
+          if (this.selectedCustomer?.id === f.id) this.selectedCustomer = updated;
         }
       } else {
-        this.customers.push({...data, id: nextId(this.customers)});
+        const { data } = await _supa.from('customers').insert(row).select().single();
+        if (data) this.customers.push(toCamel(data));
       }
-      save('customers', this.customers);
       this.modal = null;
     },
-    deleteCustomer(id) {
+    async deleteCustomer(id) {
       if (!confirm('Delete this customer?')) return;
-      this.customers = this.customers.filter(c=>c.id!==id);
-      save('customers', this.customers);
+      await _supa.from('customers').delete().eq('id', id);
+      this.customers = this.customers.filter(c => c.id !== id);
     },
 
-    saveInteraction() {
+    async saveInteraction() {
       const missing = [];
       if (!this.forms.interaction.customerId) missing.push('Customer');
       if (!this.forms.interaction.date) missing.push('Date');
@@ -3326,48 +3455,44 @@ function app() {
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
       const f = this.forms.interaction;
-      this.interactions.push({
-        ...f,
-        id: nextId(this.interactions),
-        customerId: parseInt(f.customerId),
-        user: this.currentUser.name
-      });
-      save('interactions', this.interactions);
+      const row = interactionToRow(f, this.currentUser.name);
+      const { data: iData } = await _supa.from('interactions').insert(row).select().single();
+      if (iData) this.interactions.unshift(rowToInteraction(iData));
       if (f.priceTarget) {
-        this.priceTargets.push({
-          id: nextId(this.priceTargets),
-          customerId: parseInt(f.customerId),
+        const ptRow = {
+          customer_id: parseInt(f.customerId),
           commodity: f.commodity || '',
-          targetPrice: parseFloat(f.priceTarget),
-          symbolYear: f.symbolYear || '',
+          target_price: parseFloat(f.priceTarget),
+          symbol_year: f.symbolYear || '',
           volume: f.volume || '',
           unit: 'bu',
           status: 'active',
           notes: 'Captured during ' + f.type + ' on ' + f.date
-        });
-        save('priceTargets', this.priceTargets);
+        };
+        const { data: ptData } = await _supa.from('price_targets').insert(ptRow).select().single();
+        if (ptData) this.priceTargets.push(toCamel(ptData));
       }
       if (f.followUpCheck) {
-        const customer = this.customers.find(c => c.id === parseInt(f.customerId));
+        const customer = this.customers.find(c => c.id == f.customerId);
         const due = new Date(f.date + 'T12:00:00');
         due.setDate(due.getDate() + parseInt(f.followUpDays));
-        this.todos.push({
-          id: nextId(this.todos),
+        const todoRow = {
           title: 'Follow up with ' + (customer ? customer.name : ''),
-          customerId: parseInt(f.customerId),
-          dueDate: due.toISOString().slice(0, 10),
+          customer_id: parseInt(f.customerId),
+          due_date: due.toISOString().slice(0, 10),
           priority: 'medium',
           notes: 'Created during interaction logged on ' + f.date,
           completed: false
-        });
-        save('todos', this.todos);
+        };
+        const { data: tData } = await _supa.from('todos').insert(todoRow).select().single();
+        if (tData) this.todos.push(toCamel(tData));
       }
       this.modal = null;
     },
-    deleteInteraction(id) {
+    async deleteInteraction(id) {
       if (!confirm('Delete this interaction?')) return;
-      this.interactions = this.interactions.filter(i=>i.id!==id);
-      save('interactions', this.interactions);
+      await _supa.from('interactions').delete().eq('id', id);
+      this.interactions = this.interactions.filter(i => i.id !== id);
     },
     openInteractionDetail(interaction) {
       this.viewingInteraction = interaction;
@@ -3400,100 +3525,126 @@ function app() {
       };
       this.modal = 'viewInteraction';
     },
-    updateInteraction() {
+    async updateInteraction() {
       const f = this.forms.interaction;
       if (!f.customerId || !f.type || !f.date || !f.summary) {
         alert('Customer, type, date, and summary are required.');
         return;
       }
-      const idx = this.interactions.findIndex(i => i.id === f.id);
-      if (idx === -1) return;
-      const updated = { ...this.interactions[idx], ...f };
-      this.interactions.splice(idx, 1, updated);
-      this.viewingInteraction = updated;
-      try { save('interactions', this.interactions); } catch(e) {}
+      const row = interactionToRow(f, this.currentUser.name);
+      const { data } = await _supa.from('interactions').update(row).eq('id', f.id).select().single();
+      if (data) {
+        const updated = rowToInteraction(data);
+        const idx = this.interactions.findIndex(i => i.id === f.id);
+        if (idx > -1) this.interactions.splice(idx, 1, updated);
+        this.viewingInteraction = updated;
+      }
       this.interactionEditMode = false;
     },
 
-    saveTodo() {
+    async saveTodo() {
       const missing = [];
       if (!this.forms.todo.title) missing.push('Title');
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
-      this.todos.push({
-        ...this.forms.todo,
-        id: nextId(this.todos),
-        customerId: this.forms.todo.customerId ? parseInt(this.forms.todo.customerId) : null,
-        completed: false
-      });
-      save('todos', this.todos);
+      const f = this.forms.todo;
+      const row = toSnake({ ...f, customerId: f.customerId ? parseInt(f.customerId) : null, completed: false });
+      delete row.id;
+      const { data } = await _supa.from('todos').insert(row).select().single();
+      if (data) this.todos.push(toCamel(data));
       this.modal = null;
     },
-    completeTodo(id) { const t=this.todos.find(t=>t.id===id); if(t){t.completed=true;} save('todos',this.todos); },
-    reopenTodo(id) { const t=this.todos.find(t=>t.id===id); if(t){t.completed=false;} save('todos',this.todos); },
-    deleteTodo(id) {
+    async completeTodo(id) {
+      await _supa.from('todos').update({ completed: true }).eq('id', id);
+      const t = this.todos.find(t => t.id === id); if (t) t.completed = true;
+    },
+    async reopenTodo(id) {
+      await _supa.from('todos').update({ completed: false }).eq('id', id);
+      const t = this.todos.find(t => t.id === id); if (t) t.completed = false;
+    },
+    async deleteTodo(id) {
       if (!confirm('Delete this to-do?')) return;
-      this.todos = this.todos.filter(t=>t.id!==id);
-      save('todos', this.todos);
+      await _supa.from('todos').delete().eq('id', id);
+      this.todos = this.todos.filter(t => t.id !== id);
     },
 
-    setRecStatus(id, status) { const r=this.recommendations.find(r=>r.id===id); if(r){r.status=status;} save('recommendations',this.recommendations); },
+    async setRecStatus(id, status) {
+      await _supa.from('recommendations').update({ status }).eq('id', id);
+      const r = this.recommendations.find(r => r.id === id); if (r) r.status = status;
+    },
 
-    savePriceTarget() {
+    async savePriceTarget() {
       const missing = [];
       if (!this.forms.priceTarget.customerId) missing.push('Customer');
       if (!this.forms.priceTarget.commodity) missing.push('Commodity');
       if (!this.forms.priceTarget.targetPrice) missing.push('Price Target ($ / bu)');
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
-      this.priceTargets.push({
-        ...this.forms.priceTarget,
-        id: nextId(this.priceTargets),
-        customerId: parseInt(this.forms.priceTarget.customerId),
-        targetPrice: parseFloat(this.forms.priceTarget.targetPrice),
-        status: 'active'
-      });
-      save('priceTargets', this.priceTargets);
+      const f = this.forms.priceTarget;
+      const row = {
+        customer_id: parseInt(f.customerId),
+        commodity: f.commodity,
+        target_price: parseFloat(f.targetPrice),
+        symbol_year: f.symbolYear || '',
+        volume: f.volume || '',
+        unit: f.unit || 'bu',
+        status: 'active',
+        notes: f.notes || ''
+      };
+      const { data } = await _supa.from('price_targets').insert(row).select().single();
+      if (data) this.priceTargets.push(toCamel(data));
       this.modal = null;
     },
-    setPtStatus(id, status) { const p=this.priceTargets.find(p=>p.id===id); if(p){p.status=status;} save('priceTargets',this.priceTargets); },
-    deletePriceTarget(id) {
+    async setPtStatus(id, status) {
+      await _supa.from('price_targets').update({ status }).eq('id', id);
+      const p = this.priceTargets.find(p => p.id === id); if (p) p.status = status;
+    },
+    async deletePriceTarget(id) {
       if (!confirm('Delete this price target?')) return;
-      this.priceTargets = this.priceTargets.filter(p=>p.id!==id);
-      save('priceTargets', this.priceTargets);
+      await _supa.from('price_targets').delete().eq('id', id);
+      this.priceTargets = this.priceTargets.filter(p => p.id !== id);
     },
 
     // ---- User management ----
     editUser(u) {
       this.userFormError = '';
-      this.forms.user = {id:u.id, name:u.name, username:u.username, role:u.role, password:'', productLines: u.productLines ? [...u.productLines] : [], sites: u.sites ? [...u.sites] : []};
+      this.forms.user = {id:u.id, name:u.name, email:u.email, role:u.role, password:'', productLines: u.productLines ? [...u.productLines] : [], sites: u.sites ? [...u.sites] : []};
       this.modal = 'editUser';
     },
-    saveUser() {
+    async saveUser() {
       const f = this.forms.user;
-      if (!f.name || !f.username) { this.userFormError = 'Name and username are required.'; return; }
+      if (!f.name || !f.email) { this.userFormError = 'Name and email are required.'; return; }
       if (this.modal==='addUser' && !f.password) { this.userFormError = 'Password is required for new users.'; return; }
-      if (this.modal==='addUser' && this.users.find(u=>u.username===f.username)) {
-        this.userFormError = 'Username already taken.'; return;
-      }
+      this.userFormError = '';
+      const pls = f.role==='admin' ? [] : (f.productLines||[]);
+      const stes = f.role==='admin' ? [] : (f.sites||[]);
       if (f.id) {
+        const profileRow = { name: f.name, role: f.role, product_lines: pls, sites: stes };
+        await _supa.from('profiles').update(profileRow).eq('id', f.id);
         const idx = this.users.findIndex(u=>u.id===f.id);
-        if (idx>-1) { this.users[idx] = {...this.users[idx], name:f.name, role:f.role, productLines:f.role==='admin'?[]:(f.productLines||[]), sites:f.role==='admin'?[]:(f.sites||[])}; }
-        if (this.currentUser?.id === f.id) { this.currentUser = {...this.currentUser, name:f.name, role:f.role}; }
+        if (idx>-1) this.users[idx] = {...this.users[idx], name:f.name, role:f.role, productLines:pls, sites:stes};
+        if (this.currentUser?.id === f.id) this.currentUser = {...this.currentUser, name:f.name, role:f.role};
       } else {
-        this.users.push({id:nextId(this.users), name:f.name, username:f.username, role:f.role, password:f.password, productLines:f.role==='admin'?[]:(f.productLines||[]), sites:f.role==='admin'?[]:(f.sites||[])});
+        const { data: authData, error } = await _supa.auth.admin ?
+          { data: null, error: new Error('Use invite flow') } :
+          await _supa.auth.signUp({ email: f.email, password: f.password });
+        if (error) { this.userFormError = error.message; return; }
+        const uid = authData?.user?.id;
+        if (uid) {
+          await _supa.from('profiles').upsert({ id: uid, name: f.name, role: f.role, email: f.email, product_lines: pls, sites: stes });
+          this.users.push({ id: uid, name: f.name, email: f.email, role: f.role, productLines: pls, sites: stes });
+        }
       }
-      save('users', this.users);
       this.modal = null;
     },
-    deleteUser(id) {
+    async deleteUser(id) {
       if (id===this.currentUser?.id) return;
       const u = this.users.find(u=>u.id===id);
       if (!confirm(`Delete user "${u?.name}"? Their customers will become unassigned.`)) return;
+      await _supa.from('customers').update({ assigned_to: null }).eq('assigned_to', id);
+      await _supa.from('profiles').delete().eq('id', id);
       this.users = this.users.filter(u=>u.id!==id);
       this.customers = this.customers.map(c=>c.assignedTo===id ? {...c, assignedTo:null} : c);
-      save('users', this.users);
-      save('customers', this.customers);
     },
 
     openAdminPasswordReset(u) {
@@ -3501,27 +3652,25 @@ function app() {
       this.forms.passwordReset = {targetId:u.id, targetName:u.name, newPassword:'', confirmPassword:''};
       this.modal = 'adminResetPassword';
     },
-    doAdminPasswordReset() {
+    async doAdminPasswordReset() {
       const f = this.forms.passwordReset;
-      if (!f.newPassword) { this.passwordResetError = 'New password is required.'; return; }
-      if (f.newPassword !== f.confirmPassword) { this.passwordResetError = 'Passwords do not match.'; return; }
-      const idx = this.users.findIndex(u=>u.id===f.targetId);
-      if (idx>-1) { this.users[idx] = {...this.users[idx], password:f.newPassword}; }
-      save('users', this.users);
+      this.passwordResetError = '';
+      const u = this.users.find(u => u.id === f.targetId);
+      if (!u?.email) { this.passwordResetError = 'User has no email on file.'; return; }
+      const { error } = await _supa.auth.resetPasswordForEmail(u.email);
+      if (error) { this.passwordResetError = error.message; return; }
+      alert(`Password reset email sent to ${u.email}`);
       this.modal = null;
     },
 
-    doChangePassword() {
+    async doChangePassword() {
       const f = this.forms.changePassword;
       this.changePasswordError = '';
       this.changePasswordSuccess = false;
-      const u = this.users.find(u=>u.id===this.currentUser?.id);
-      if (!u || u.password !== f.current) { this.changePasswordError = 'Current password is incorrect.'; return; }
       if (!f.newPassword) { this.changePasswordError = 'New password cannot be empty.'; return; }
       if (f.newPassword !== f.confirm) { this.changePasswordError = 'New passwords do not match.'; return; }
-      const idx = this.users.findIndex(u=>u.id===this.currentUser.id);
-      if (idx>-1) { this.users[idx] = {...this.users[idx], password:f.newPassword}; }
-      save('users', this.users);
+      const { error } = await _supa.auth.updateUser({ password: f.newPassword });
+      if (error) { this.changePasswordError = error.message; return; }
       this.changePasswordSuccess = true;
       setTimeout(() => { this.modal = null; }, 1200);
     }
