@@ -1052,8 +1052,9 @@
               <p class="text-sm font-medium text-gray-900" x-text="t.title"></p>
               <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                 <span x-show="t.customerId" class="text-xs text-gray-500" x-text="customerName(t.customerId)"></span>
-                <span x-show="t.dueDate" class="text-xs text-gray-400" x-text="'Due '+t.dueDate"></span>
-                <span x-show="t.notes" class="text-xs text-gray-400 truncate max-w-xs" x-text="t.notes"></span>
+                <span x-show="t.dueDate" class="text-xs" :class="new Date(t.dueDate+'T00:00:00') < new Date() && !t.completed ? 'text-red-500 font-medium' : 'text-gray-400'" x-text="'Due '+t.dueDate"></span>
+                <span x-show="t.assignedTo && t.assignedTo !== currentUser?.id" class="text-xs text-brand-600" x-text="'→ ' + (users.find(u=>u.id===t.assignedTo)?.name || 'Unknown')"></span>
+                <span x-show="t.assignedTo === currentUser?.id && t.createdBy && t.createdBy !== currentUser?.id" class="text-xs text-amber-600" x-text="'From ' + (users.find(u=>u.id===t.createdBy)?.name || 'Unknown')"></span>
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
@@ -2172,6 +2173,18 @@
         </div>
       </div>
       <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_notes')"></label><textarea x-model="forms.todo.notes" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea></div>
+      <div x-show="assignableUsers.length > 1">
+        <label class="block text-xs font-medium text-gray-700 mb-1">Assign To</label>
+        <select x-model="forms.todo.assignedTo" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="">Myself (unassigned)</option>
+          <template x-for="u in assignableUsers.filter(u => u.id !== currentUser?.id)" :key="u.id">
+            <option :value="u.id" x-text="u.name + (u.role === 'admin' ? ' (Admin)' : '')"></option>
+          </template>
+        </select>
+        <p x-show="forms.todo.assignedTo && forms.todo.assignedTo !== currentUser?.id" class="text-xs text-brand-600 mt-1">
+          This person will receive a notification when the task is assigned.
+        </p>
+      </div>
       <div x-show="validationError" class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
         <span x-text="validationError"></span>
@@ -2231,6 +2244,24 @@
           <div>
             <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Notes</dt>
             <dd class="text-sm text-gray-700 whitespace-pre-wrap" x-text="viewingTodo?.notes"></dd>
+          </div>
+        </template>
+        <template x-if="viewingTodo?.assignedTo && viewingTodo?.assignedTo !== currentUser?.id">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Assigned To</dt>
+            <dd class="text-sm text-gray-900" x-text="users.find(u=>u.id===viewingTodo?.assignedTo)?.name || 'Unknown'"></dd>
+          </div>
+        </template>
+        <template x-if="viewingTodo?.assignedTo === currentUser?.id">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Assigned To</dt>
+            <dd class="text-sm text-brand-700 font-medium">You</dd>
+          </div>
+        </template>
+        <template x-if="viewingTodo?.createdBy && viewingTodo?.createdBy !== currentUser?.id">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Created By</dt>
+            <dd class="text-sm text-gray-900" x-text="users.find(u=>u.id===viewingTodo?.createdBy)?.name || 'Unknown'"></dd>
           </div>
         </template>
       </dl>
@@ -3088,7 +3119,7 @@ function app() {
     forms: {
       customer: { id:null, name:'', type:'grower', company:'', email:'', phone:'', atlasId:'', cinchId:'', mdmId:'', location:'', street:'', city:'', state:'', county:'', zip:'', notes:'', assignedTo:'', parentId:null, productLines:[], sites:[] },
       interaction: { customerId:'', type:'call', summary:'', notes:'', date: new Date().toISOString().slice(0,10), commodity:'', priceTarget:'', symbolYear:'', volume:'', season:'spring', spring_plantingIntentCorn:50, spring_plantingStartDate:'', spring_soilMoisture:'', summer_midseasonActivities:'', summer_cropHealthPests:'', summer_soilMoisture:'', fall_grainMoisture:'', fall_harvestStartDate:'', fall_cropQuality:'', fall_estimatedYield:'' },
-      todo: { customerId:'', title:'', notes:'', dueDate:'', priority:'medium' },
+      todo: { customerId:'', title:'', notes:'', dueDate:'', priority:'medium', assignedTo:'' },
       priceTarget: { customerId:'', commodity:'', targetPrice:'', symbolYear:'', volume:'', notes:'' },
       user: { id:null, name:'', email:'', role:'rep', password:'', productLines:[], sites:[] },
       passwordReset: { targetId:null, targetName:'', newPassword:'', confirmPassword:'' },
@@ -3393,24 +3424,13 @@ function app() {
     },
 
     // ── Notifications ─────────────────────────────────────────────────────────
-    _seedNotifications() {
-      const now = new Date();
-      const ago = (h) => { const d = new Date(now); d.setHours(d.getHours() - h); return d; };
-      const fmt = (d) => {
-        const diff = Math.round((now - d) / 60000);
-        if (diff < 60) return diff + 'm ago';
-        if (diff < 1440) return Math.round(diff / 60) + 'h ago';
-        return Math.round(diff / 1440) + 'd ago';
-      };
-      const items = [
-        { id: 1, type: 'todo', title: 'To-do due today', body: 'Confirm Rivera Grain basis lock before Aug 31 deadline.', time: fmt(ago(1)), read: false },
-        { id: 2, type: 'todo', title: 'To-do due soon', body: 'Check IP certification availability for NW Soy Collective — due Aug 27.', time: fmt(ago(3)), read: false },
-        { id: 3, type: 'interaction', title: 'New interaction logged', body: 'Tom Albrecht — call logged. Locked in 30,000 bu soybeans at $10.15 Nov.', time: fmt(ago(6)), read: false },
-        { id: 4, type: 'recommendation', title: 'New recommendation', body: 'Greg Thornton is holding 40,000 bu corn. Consider a minimum price contract.', time: fmt(ago(12)), read: false },
-        { id: 5, type: 'priceTarget', title: 'Price target reached', body: 'Tom Albrecht — Soybean target of $10.15 Nov was filled.', time: fmt(ago(24)), read: true },
-        { id: 6, type: 'interaction', title: 'Follow-up reminder', body: 'John Harrington — follow-up on fall delivery due Sep 1.', time: fmt(ago(36)), read: true },
-      ];
-      this.notifications = items;
+    _formatNotifTime(iso) {
+      if (!iso) return '';
+      const diff = Math.round((new Date() - new Date(iso)) / 60000);
+      if (diff < 1) return 'just now';
+      if (diff < 60) return diff + 'm ago';
+      if (diff < 1440) return Math.round(diff / 60) + 'h ago';
+      return Math.round(diff / 1440) + 'd ago';
     },
     notificationIcon(type) {
       const icons = {
@@ -3421,19 +3441,30 @@ function app() {
       };
       return icons[type] || icons.interaction;
     },
-    markNotificationRead(id) {
+    async _insertNotification(userId, type, title, body) {
+      const { data } = await _supa.from('notifications').insert({ user_id: userId, type, title, body }).select().single();
+      if (data && userId === this.currentUser.id) {
+        this.notifications.unshift({ id: data.id, type, title, body, read: false, time: 'just now' });
+      }
+    },
+    async markNotificationRead(id) {
       const n = this.notifications.find(n => n.id === id);
-      if (n) n.read = true;
+      if (n && !n.read) { n.read = true; await _supa.from('notifications').update({ read: true }).eq('id', id); }
     },
-    markAllNotificationsRead() {
+    async markAllNotificationsRead() {
+      const ids = this.notifications.filter(n => !n.read).map(n => n.id);
       this.notifications.forEach(n => n.read = true);
+      if (ids.length) await _supa.from('notifications').update({ read: true }).in('id', ids);
     },
-    dismissNotification(id) {
+    async dismissNotification(id) {
       this.notifications = this.notifications.filter(n => n.id !== id);
+      await _supa.from('notifications').delete().eq('id', id);
     },
-    addNotification(type, title, body) {
-      const id = (this.notifications.length ? Math.max(...this.notifications.map(n => n.id)) : 0) + 1;
-      this.notifications.unshift({ id, type, title, body, time: 'just now', read: false });
+
+    get assignableUsers() {
+      if (this.currentUser?.role === 'admin') return this.users;
+      const mySites = new Set(this.currentUser?.sites || []);
+      return this.users.filter(u => (u.sites || []).some(s => mySites.has(s)));
     },
 
     // Seeded pseudo-random for placeholder chart data
@@ -3536,7 +3567,6 @@ function app() {
       if (session) {
         await this._loadProfile(session.user);
         await this._loadAllData();
-        this._seedNotifications();
         this.view = 'dashboard';
       }
       _supa.auth.onAuthStateChange(async (event, session) => {
@@ -3557,7 +3587,8 @@ function app() {
       const [
         { data: customers }, { data: interactions }, { data: todos },
         { data: recommendations }, { data: priceTargets },
-        { data: sites }, { data: productLines }, { data: profiles }
+        { data: sites }, { data: productLines }, { data: profiles },
+        { data: notifs }
       ] = await Promise.all([
         _supa.from('customers').select('*').order('name'),
         _supa.from('interactions').select('*').order('date', { ascending: false }),
@@ -3567,6 +3598,7 @@ function app() {
         _supa.from('sites').select('name').order('name'),
         _supa.from('product_lines').select('name').order('name'),
         _supa.from('profiles').select('*'),
+        _supa.from('notifications').select('*').eq('user_id', this.currentUser.id).order('created_at', { ascending: false }),
       ]);
       this.customers = (customers || []).map(toCamel);
       this.interactions = (interactions || []).map(rowToInteraction);
@@ -3576,6 +3608,7 @@ function app() {
       this.sites = (sites || []).map(s => s.name);
       this.productLines = (productLines || []).map(p => p.name);
       this.users = (profiles || []).map(p => ({ id: p.id, name: p.name, email: p.email, role: p.role, productLines: p.product_lines || [], sites: p.sites || [] }));
+      this.notifications = (notifs || []).map(n => ({ id: n.id, type: n.type, title: n.title, body: n.body, read: n.read, time: this._formatNotifTime(n.created_at) }));
       if (!this.sites.length) {
         const defs = ['Claypool','Grand Junction','Upper Sandusky','Burns Harbor','Cahokia','Port Allen','Natchez','Rosedale','West Memphis','Wilton','Seattle','Kansas City'];
         await _supa.from('sites').insert(defs.map(name => ({ name })));
@@ -3595,7 +3628,6 @@ function app() {
       const { data: { session } } = await _supa.auth.getSession();
       await this._loadProfile(session.user);
       await this._loadAllData();
-      this._seedNotifications();
       this.view = 'dashboard';
     },
     async doLogout() { await _supa.auth.signOut(); this.currentUser = null; this.view = 'login'; this.loginForm = { email: '', password: '' }; },
@@ -3608,7 +3640,7 @@ function app() {
       this.changePasswordSuccess = false;
       if (name==='addCustomer') this.forms.customer = {id:null,name:'',type:'grower',company:'',email:'',phone:'',atlasId:'',cinchId:'',mdmId:'',location:'',street:'',city:'',state:'',county:'',zip:'',notes:'',assignedTo:this.currentUser?.id||'',parentId:null,productLines:[],sites:[]};
       if (name==='addInteraction') this.forms.interaction = {customerId:'',type:'call',summary:'',notes:'',date:new Date().toISOString().slice(0,10),followUpCheck:false,followUpDays:7,commodity:'',priceTarget:'',symbolYear:'',volume:'',season:'spring',spring_plantingIntentCorn:50,spring_plantingStartDate:'',spring_soilMoisture:'',summer_midseasonActivities:'',summer_cropHealthPests:'',summer_soilMoisture:'',fall_grainMoisture:'',fall_harvestStartDate:'',fall_cropQuality:'',fall_estimatedYield:''};
-      if (name==='addTodo') this.forms.todo = {customerId:'',title:'',notes:'',dueDate:'',priority:'medium'};
+      if (name==='addTodo') this.forms.todo = {customerId:'',title:'',notes:'',dueDate:'',priority:'medium',assignedTo:''};
       if (name==='addPriceTarget') this.forms.priceTarget = {customerId:'',commodity:'',targetPrice:'',symbolYear:'',volume:'',notes:''};
       if (name==='addUser') this.forms.user = {id:null,name:'',email:'',role:'rep',password:'',productLines:[],sites:[]};
       if (name==='changePassword') this.forms.changePassword = {current:'',newPassword:'',confirm:''};
@@ -3749,15 +3781,42 @@ function app() {
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
       const f = this.forms.todo;
-      const row = toSnake({ ...f, customerId: f.customerId ? parseInt(f.customerId) : null, completed: false });
-      delete row.id;
+      const row = {
+        title: f.title,
+        customer_id: f.customerId ? parseInt(f.customerId) : null,
+        due_date: f.dueDate || null,
+        priority: f.priority,
+        notes: f.notes || null,
+        completed: false,
+        created_by: this.currentUser.id,
+        assigned_to: f.assignedTo || null,
+      };
       const { data } = await _supa.from('todos').insert(row).select().single();
-      if (data) this.todos.push(toCamel(data));
+      if (data) {
+        this.todos.push(toCamel(data));
+        if (f.assignedTo && f.assignedTo !== this.currentUser.id) {
+          await this._insertNotification(
+            f.assignedTo, 'todo',
+            'New to-do assigned to you',
+            `${this.currentUser.name} assigned you: "${f.title}"${f.dueDate ? ' — due ' + f.dueDate : ''}`
+          );
+        }
+      }
       this.modal = null;
     },
     async completeTodo(id) {
       await _supa.from('todos').update({ completed: true }).eq('id', id);
-      const t = this.todos.find(t => t.id === id); if (t) t.completed = true;
+      const t = this.todos.find(t => t.id === id);
+      if (t) {
+        t.completed = true;
+        if (t.createdBy && t.createdBy !== this.currentUser.id) {
+          await this._insertNotification(
+            t.createdBy, 'todo',
+            'To-do completed',
+            `${this.currentUser.name} completed: "${t.title}"`
+          );
+        }
+      }
     },
     async reopenTodo(id) {
       await _supa.from('todos').update({ completed: false }).eq('id', id);
