@@ -3890,7 +3890,8 @@ function app() {
       const stes = f.role==='admin' ? [] : (f.sites||[]);
       if (f.id) {
         const profileRow = { name: f.name, role: f.role, product_lines: pls, sites: stes };
-        await _supa.from('profiles').update(profileRow).eq('id', f.id);
+        const { error: updateErr } = await _supa.from('profiles').update(profileRow).eq('id', f.id);
+        if (updateErr) { this.userFormError = 'Save failed: ' + updateErr.message; return; }
         const idx = this.users.findIndex(u=>u.id===f.id);
         if (idx>-1) this.users[idx] = {...this.users[idx], name:f.name, role:f.role, productLines:pls, sites:stes};
         if (this.currentUser?.id === f.id) this.currentUser = {...this.currentUser, name:f.name, role:f.role};
