@@ -60,7 +60,6 @@
       <div x-show="loginError" class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3" x-text="loginError"></div>
       <button @click="doLogin()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg transition-colors" x-text="t('login_button')"></button>
     </div>
-    <p class="text-center text-xs text-gray-400 mt-6">Demo: <span class="font-mono">tyler</span> / <span class="font-mono">password123</span></p>
   </div>
 </div>
 
@@ -2806,11 +2805,7 @@ function interactionToRow(f, userName) {
 }
 
 function app() {
-  const SEED_USERS = [
-    {id:1,username:'tyler',password:'password123',name:'Tyler McGee',role:'admin',productLines:[]},
-    {id:2,username:'sarah',password:'password123',name:'Sarah Johnson',role:'rep',productLines:['Corn','Soybeans','Meal']},
-    {id:3,username:'mike',password:'password123',name:'Mike Davis',role:'rep',productLines:['Corn','DDG','Ethanol']}
-  ];
+
 
   const SEED = {
     customers: [
