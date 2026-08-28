@@ -3139,7 +3139,10 @@ function app() {
       if (this.currentUser?.role === 'admin') return this.customers;
       const sites = this.currentUser?.sites || [];
       if (!sites.length) return this.customers;
-      return this.customers.filter(c => (c.sites||[]).some(s => sites.includes(s)));
+      return this.customers.filter(c =>
+        c.assignedTo === this.currentUser.id ||
+        (c.sites||[]).some(s => sites.includes(s))
+      );
     },
 
     get unreadNotificationCount() {
