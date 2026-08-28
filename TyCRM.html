@@ -1044,8 +1044,8 @@
       </div>
       <div class="space-y-2">
         <template x-for="t in todos.filter(t=>!t.completed).sort((a,b)=>priSort(a.priority)-priSort(b.priority))" :key="t.id">
-          <div class="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-3">
-            <button @click="completeTodo(t.id)" class="mt-0.5 shrink-0">
+          <div @click="viewingTodo=t; modal='viewTodo'" class="bg-white rounded-xl border border-gray-200 p-4 flex items-start gap-3 cursor-pointer hover:border-brand-300 hover:shadow-sm transition-all">
+            <button @click.stop="completeTodo(t.id)" class="mt-0.5 shrink-0">
               <svg class="w-5 h-5 text-gray-300 hover:text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
             </button>
             <div class="flex-1 min-w-0">
@@ -1058,7 +1058,7 @@
             </div>
             <div class="flex items-center gap-2 shrink-0">
               <span :class="priBadge(t.priority)" class="text-xs px-2 py-0.5 rounded-full border" x-text="t.priority"></span>
-              <button @click="deleteTodo(t.id)" class="text-gray-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+              <button @click.stop="deleteTodo(t.id)" class="text-gray-300 hover:text-red-500"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
           </div>
         </template>
@@ -1070,11 +1070,11 @@
         </button>
         <div x-show="showCompletedTodos" class="space-y-2 mt-2">
           <template x-for="t in todos.filter(t=>t.completed)" :key="t.id">
-            <div class="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3 opacity-60">
-              <button @click="reopenTodo(t.id)" class="mt-0.5 shrink-0">
+            <div @click="viewingTodo=t; modal='viewTodo'" class="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3 opacity-60 cursor-pointer hover:opacity-80 hover:border-gray-200 transition-all">
+              <button @click.stop="reopenTodo(t.id)" class="mt-0.5 shrink-0">
                 <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </button>
-              <p class="text-sm font-medium text-gray-400 line-through" x-text="t.title"></p>
+              <p class="text-sm font-medium text-gray-400 line-through flex-1" x-text="t.title"></p>
             </div>
           </template>
         </div>
@@ -2183,6 +2183,81 @@
     </div>
   </div>
 
+  <!-- View Todo -->
+  <div x-show="modal==='viewTodo'" class="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto" @click.stop>
+    <div class="sm:hidden flex justify-center pt-3 pb-1"><div class="w-10 h-1 rounded-full bg-gray-300"></div></div>
+    <!-- Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-10">
+      <div class="flex items-center gap-2 min-w-0">
+        <span x-show="viewingTodo?.completed" class="text-green-500">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </span>
+        <span x-show="!viewingTodo?.completed" class="text-gray-300">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/></svg>
+        </span>
+        <h3 class="font-semibold text-gray-900 truncate" x-text="viewingTodo?.title"></h3>
+      </div>
+      <button @click="modal=null; viewingTodo=null"><svg class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <!-- Body -->
+    <div class="p-6 space-y-5">
+      <!-- Priority + Status badges -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span :class="priBadge(viewingTodo?.priority)" class="text-xs px-2.5 py-1 rounded-full border font-medium capitalize" x-text="viewingTodo?.priority + ' priority'"></span>
+        <span x-show="viewingTodo?.completed" class="text-xs px-2.5 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 font-medium">Completed</span>
+        <span x-show="!viewingTodo?.completed" class="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-medium">Open</span>
+      </div>
+      <!-- Details grid -->
+      <dl class="space-y-3">
+        <template x-if="viewingTodo?.customerId">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Customer</dt>
+            <dd>
+              <button @click="openCustomerProfileById(viewingTodo.customerId); modal=null; viewingTodo=null"
+                class="text-sm font-medium text-brand-700 hover:underline" x-text="customerName(viewingTodo?.customerId)"></button>
+              <span :class="customerType(viewingTodo?.customerId)==='grower'?'bg-green-100 text-green-700':'bg-blue-100 text-blue-700'"
+                class="ml-2 text-xs px-1.5 py-0.5 rounded-full" x-text="customerType(viewingTodo?.customerId)"></span>
+            </dd>
+          </div>
+        </template>
+        <template x-if="viewingTodo?.dueDate">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Due Date</dt>
+            <dd class="text-sm text-gray-900" :class="!viewingTodo?.completed && viewingTodo?.dueDate < new Date().toISOString().slice(0,10) ? 'text-red-600 font-medium' : ''"
+              x-text="viewingTodo?.dueDate + (!viewingTodo?.completed && viewingTodo?.dueDate < new Date().toISOString().slice(0,10) ? ' — Overdue' : '')"></dd>
+          </div>
+        </template>
+        <template x-if="viewingTodo?.notes">
+          <div>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Notes</dt>
+            <dd class="text-sm text-gray-700 whitespace-pre-wrap" x-text="viewingTodo?.notes"></dd>
+          </div>
+        </template>
+      </dl>
+      <!-- Action buttons -->
+      <div class="flex gap-3 pt-2 border-t border-gray-100">
+        <template x-if="!viewingTodo?.completed">
+          <button @click="completeTodo(viewingTodo.id); viewingTodo={...viewingTodo, completed:true}"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Mark Complete
+          </button>
+        </template>
+        <template x-if="viewingTodo?.completed">
+          <button @click="reopenTodo(viewingTodo.id); viewingTodo={...viewingTodo, completed:false}"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reopen
+          </button>
+        </template>
+        <button @click="if(confirm('Delete this to-do?')){ deleteTodo(viewingTodo.id); modal=null; viewingTodo=null; }"
+          class="px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 text-sm font-medium rounded-lg transition-colors">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Add Price Target -->
   <div x-show="modal==='addPriceTarget'" class="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto" @click.stop>
     <div class="sm:hidden flex justify-center pt-3 pb-1"><div class="w-10 h-1 rounded-full bg-gray-300"></div></div>
@@ -2953,6 +3028,7 @@ function app() {
     recBannerDismissed: false,
     langOpen: false,
     viewingInteraction: null,
+    viewingTodo: null,
     interactionEditMode: false,
     customerSearch: '',
     customerTypeFilter: '',
