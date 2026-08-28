@@ -2397,13 +2397,21 @@
       <button @click="modal=null"><svg class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
     <div class="p-6 space-y-4">
-      <p class="text-sm text-gray-600"><span x-text="t('admin_reset_pw_for')"></span> <strong x-text="forms.passwordReset.targetName"></strong>.</p>
-      <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_new_pw')"></label><input type="password" x-model="forms.passwordReset.newPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
-      <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_confirm_pw')"></label><input type="password" x-model="forms.passwordReset.confirmPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
-      <div x-show="passwordResetError" class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3" x-text="passwordResetError"></div>
-      <div class="flex justify-end gap-3 pt-2">
-        <button @click="modal=null" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800" x-text="t('btn_cancel')"></button>
-        <button @click="doAdminPasswordReset()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg" x-text="t('btn_set_password')"></button>
+      <div x-show="!passwordResetSuccess">
+        <p class="text-sm text-gray-600 mb-4">Send a password reset link to <strong x-text="forms.passwordReset.targetEmail"></strong>. They will receive an email with a link to set a new password.</p>
+        <div x-show="passwordResetError" class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-3" x-text="passwordResetError"></div>
+        <div class="flex justify-end gap-3">
+          <button @click="modal=null" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+          <button @click="doAdminPasswordReset()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg">Send Reset Email</button>
+        </div>
+      </div>
+      <div x-show="passwordResetSuccess" class="text-center py-2">
+        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <p class="text-sm font-medium text-gray-900 mb-1">Reset email sent</p>
+        <p class="text-xs text-gray-500 mb-4" x-text="'Sent to ' + forms.passwordReset.targetEmail"></p>
+        <button @click="modal=null; passwordResetSuccess=false" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg">Done</button>
       </div>
     </div>
   </div>
@@ -3090,6 +3098,7 @@ function app() {
     validationError: '',
     userFormError: '',
     passwordResetError: '',
+    passwordResetSuccess: false,
     changePasswordError: '',
     changePasswordSuccess: false,
     users: [],
@@ -3122,7 +3131,7 @@ function app() {
       todo: { customerId:'', title:'', notes:'', dueDate:'', priority:'medium', assignedTo:'' },
       priceTarget: { customerId:'', commodity:'', targetPrice:'', symbolYear:'', volume:'', notes:'' },
       user: { id:null, name:'', email:'', role:'rep', password:'', productLines:[], sites:[] },
-      passwordReset: { targetId:null, targetName:'', newPassword:'', confirmPassword:'' },
+      passwordReset: { targetId:null, targetName:'', targetEmail:'' },
       changePassword: { current:'', newPassword:'', confirm:'' }
     },
 
@@ -3636,6 +3645,7 @@ function app() {
       this.validationError = '';
       this.userFormError = '';
       this.passwordResetError = '';
+      this.passwordResetSuccess = false;
       this.changePasswordError = '';
       this.changePasswordSuccess = false;
       if (name==='addCustomer') this.forms.customer = {id:null,name:'',type:'grower',company:'',email:'',phone:'',atlasId:'',cinchId:'',mdmId:'',location:'',street:'',city:'',state:'',county:'',zip:'',notes:'',assignedTo:this.currentUser?.id||'',parentId:null,productLines:[],sites:[]};
@@ -3909,18 +3919,19 @@ function app() {
 
     openAdminPasswordReset(u) {
       this.passwordResetError = '';
-      this.forms.passwordReset = {targetId:u.id, targetName:u.name, newPassword:'', confirmPassword:''};
+      this.passwordResetSuccess = false;
+      this.forms.passwordReset = { targetId: u.id, targetName: u.name, targetEmail: u.email || '' };
       this.modal = 'adminResetPassword';
     },
     async doAdminPasswordReset() {
       const f = this.forms.passwordReset;
       this.passwordResetError = '';
-      const u = this.users.find(u => u.id === f.targetId);
-      if (!u?.email) { this.passwordResetError = 'User has no email on file.'; return; }
-      const { error } = await _supa.auth.resetPasswordForEmail(u.email);
+      if (!f.targetEmail) { this.passwordResetError = 'No email address on file for this user.'; return; }
+      const { error } = await _supa.auth.resetPasswordForEmail(f.targetEmail, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
       if (error) { this.passwordResetError = error.message; return; }
-      alert(`Password reset email sent to ${u.email}`);
-      this.modal = null;
+      this.passwordResetSuccess = true;
     },
 
     async doChangePassword() {
