@@ -3454,10 +3454,12 @@ function app() {
       return icons[type] || icons.interaction;
     },
     async _insertNotification(userId, type, title, body) {
-      const { data, error } = await _supa.from('notifications').insert({ user_id: userId, type, title, body }).select().single();
+      const { data: newId, error } = await _supa.rpc('insert_notification', {
+        p_user_id: userId, p_type: type, p_title: title, p_body: body
+      });
       if (error) { console.error('Notification insert failed:', error.message); return; }
-      if (data && userId === this.currentUser.id) {
-        this.notifications.unshift({ id: data.id, type, title, body, read: false, time: 'just now' });
+      if (newId && userId === this.currentUser.id) {
+        this.notifications.unshift({ id: newId, type, title, body, read: false, time: 'just now' });
       }
     },
     async markNotificationRead(id) {
@@ -3805,9 +3807,7 @@ function app() {
         created_by: this.currentUser.id,
         assigned_to: f.assignedTo || null,
       };
-      console.log('[saveTodo] assignedTo:', f.assignedTo, '| users loaded:', this.users.length, '| assignable:', this.assignableUsers.length);
-      const { data, error: todoErr } = await _supa.from('todos').insert(row).select().single();
-      if (todoErr) console.error('[saveTodo] todo insert error:', todoErr.message);
+      const { data } = await _supa.from('todos').insert(row).select().single();
       if (data) {
         this.todos.push(toCamel(data));
         if (f.assignedTo && f.assignedTo !== this.currentUser.id) {
