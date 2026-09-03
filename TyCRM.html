@@ -3454,7 +3454,8 @@ function app() {
       return icons[type] || icons.interaction;
     },
     async _insertNotification(userId, type, title, body) {
-      const { data } = await _supa.from('notifications').insert({ user_id: userId, type, title, body }).select().single();
+      const { data, error } = await _supa.from('notifications').insert({ user_id: userId, type, title, body }).select().single();
+      if (error) { console.error('Notification insert failed:', error.message); return; }
       if (data && userId === this.currentUser.id) {
         this.notifications.unshift({ id: data.id, type, title, body, read: false, time: 'just now' });
       }
