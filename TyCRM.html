@@ -3805,7 +3805,9 @@ function app() {
         created_by: this.currentUser.id,
         assigned_to: f.assignedTo || null,
       };
-      const { data } = await _supa.from('todos').insert(row).select().single();
+      console.log('[saveTodo] assignedTo:', f.assignedTo, '| users loaded:', this.users.length, '| assignable:', this.assignableUsers.length);
+      const { data, error: todoErr } = await _supa.from('todos').insert(row).select().single();
+      if (todoErr) console.error('[saveTodo] todo insert error:', todoErr.message);
       if (data) {
         this.todos.push(toCamel(data));
         if (f.assignedTo && f.assignedTo !== this.currentUser.id) {
