@@ -1156,9 +1156,9 @@
           </thead>
           <tbody class="divide-y divide-gray-100">
             <template x-for="p in filteredPriceTargets" :key="p.id">
-              <tr class="hover:bg-gray-50">
+              <tr @click="editPriceTarget(p)" class="hover:bg-gray-50 cursor-pointer">
                 <td class="px-5 py-3">
-                  <button @click="openCustomerProfileById(p.customerId)" class="font-medium text-brand-700 hover:underline text-left" x-text="customerName(p.customerId)"></button>
+                  <button @click.stop="openCustomerProfileById(p.customerId)" class="font-medium text-brand-700 hover:underline text-left" x-text="customerName(p.customerId)"></button>
                   <div :class="customerType(p.customerId)==='grower'?'text-green-600':'text-blue-600'" class="text-xs" x-text="customerType(p.customerId)"></div>
                 </td>
                 <td class="px-4 py-3 font-medium text-gray-800" x-text="p.commodity"></td>
@@ -1168,9 +1168,9 @@
                 <td class="px-4 py-3"><span :class="ptStatusBadge(p.status)" class="inline-flex text-xs px-2 py-1 rounded-full border" x-text="p.status"></span></td>
                 <td class="px-4 py-3">
                   <div class="flex items-center gap-1">
-                    <button x-show="p.status==='active'" @click="setPtStatus(p.id,'met')" class="text-xs px-2 py-1 border border-blue-200 text-blue-600 rounded hover:bg-blue-50" x-text="t('btn_met')"></button>
-                    <button x-show="p.status==='active'" @click="setPtStatus(p.id,'expired')" class="text-xs px-2 py-1 border border-gray-200 text-gray-500 rounded hover:bg-gray-50" x-text="t('btn_expire')"></button>
-                    <button @click="deletePriceTarget(p.id)" class="text-gray-300 hover:text-red-500 ml-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                    <button x-show="p.status==='active'" @click.stop="setPtStatus(p.id,'met')" class="text-xs px-2 py-1 border border-blue-200 text-blue-600 rounded hover:bg-blue-50" x-text="t('btn_met')"></button>
+                    <button x-show="p.status==='active'" @click.stop="setPtStatus(p.id,'expired')" class="text-xs px-2 py-1 border border-gray-200 text-gray-500 rounded hover:bg-gray-50" x-text="t('btn_expire')"></button>
+                    <button @click.stop="deletePriceTarget(p.id)" class="text-gray-300 hover:text-red-500 ml-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                   </div>
                 </td>
               </tr>
@@ -2291,16 +2291,16 @@
     </div>
   </div>
 
-  <!-- Add Price Target -->
-  <div x-show="modal==='addPriceTarget'" class="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto" @click.stop>
+  <!-- Add / Edit Price Target -->
+  <div x-show="modal==='addPriceTarget' || modal==='editPriceTarget'" class="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto" @click.stop>
     <div class="sm:hidden flex justify-center pt-3 pb-1"><div class="w-10 h-1 rounded-full bg-gray-300"></div></div>
     <div class="flex items-center justify-between px-6 py-4 border-b">
-      <h3 class="font-semibold text-gray-900" x-text="t('modal_add_pt')"></h3>
-      <button @click="modal=null"><svg class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      <h3 class="font-semibold text-gray-900" x-text="forms.priceTarget.id ? t('modal_edit_pt') : t('modal_add_pt')"></h3>
+      <button @click="modal=null; validationError=''"><svg class="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
     <div class="p-6 space-y-4">
       <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_customer')"></label>
-        <select x-model="forms.priceTarget.customerId" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <select x-model="forms.priceTarget.customerId" :disabled="!!forms.priceTarget.id" :class="forms.priceTarget.id && 'opacity-60 cursor-not-allowed'" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           <option value="" x-text="t('select_customer')"></option>
           <template x-for="c in customers" :key="c.id"><option :value="c.id" x-text="c.name+' ('+c.type+')'"></option></template>
         </select>
@@ -2317,6 +2317,15 @@
       <div class="grid grid-cols-2 gap-4">
         <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_price_target')"></label><input type="number" step="0.01" min="0" x-model="forms.priceTarget.targetPrice" :placeholder="t('price_target_placeholder')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
         <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_volume')"></label><input type="text" x-model="forms.priceTarget.volume" :placeholder="t('volume_placeholder')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
+      </div>
+      <div x-show="forms.priceTarget.id">
+        <label class="block text-xs font-medium text-gray-700 mb-1">Status</label>
+        <select x-model="forms.priceTarget.status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <option value="active">Active</option>
+          <option value="met">Met</option>
+          <option value="expired">Expired</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
       </div>
       <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_notes_pt')"></label><textarea x-model="forms.priceTarget.notes" rows="2" :placeholder="t('notes_pt_placeholder')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea></div>
       <div x-show="validationError" class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
@@ -3659,7 +3668,7 @@ function app() {
       if (name==='addCustomer') this.forms.customer = {id:null,name:'',type:'grower',company:'',email:'',phone:'',atlasId:'',cinchId:'',mdmId:'',location:'',street:'',city:'',state:'',county:'',zip:'',notes:'',assignedTo:this.currentUser?.id||'',parentId:null,productLines:[],sites:[]};
       if (name==='addInteraction') this.forms.interaction = {customerId:'',type:'call',summary:'',notes:'',date:new Date().toISOString().slice(0,10),followUpCheck:false,followUpDays:7,commodity:'',priceTarget:'',symbolYear:'',volume:'',season:'spring',spring_plantingIntentCorn:50,spring_plantingStartDate:'',spring_soilMoisture:'',summer_midseasonActivities:'',summer_cropHealthPests:'',summer_soilMoisture:'',fall_grainMoisture:'',fall_harvestStartDate:'',fall_cropQuality:'',fall_estimatedYield:''};
       if (name==='addTodo') this.forms.todo = {customerId:'',title:'',notes:'',dueDate:'',priority:'medium',assignedTo:''};
-      if (name==='addPriceTarget') this.forms.priceTarget = {customerId:'',commodity:'',targetPrice:'',symbolYear:'',volume:'',notes:''};
+      if (name==='addPriceTarget') this.forms.priceTarget = {id:null,customerId:'',commodity:'',targetPrice:'',symbolYear:'',volume:'',notes:'',status:'active'};
       if (name==='addUser') this.forms.user = {id:null,name:'',email:'',role:'rep',password:'',productLines:[],sites:[]};
       if (name==='changePassword') this.forms.changePassword = {current:'',newPassword:'',confirm:''};
       this.modal = name;
@@ -3851,6 +3860,20 @@ function app() {
       const r = this.recommendations.find(r => r.id === id); if (r) r.status = status;
     },
 
+    editPriceTarget(p) {
+      this.validationError = '';
+      this.forms.priceTarget = {
+        id: p.id,
+        customerId: p.customerId,
+        commodity: p.commodity,
+        targetPrice: p.targetPrice,
+        symbolYear: p.symbolYear || p.cropYear || '',
+        volume: p.volume || '',
+        notes: p.notes || '',
+        status: p.status || 'active',
+      };
+      this.modal = 'editPriceTarget';
+    },
     async savePriceTarget() {
       const missing = [];
       if (!this.forms.priceTarget.customerId) missing.push('Customer');
@@ -3860,17 +3883,26 @@ function app() {
       this.validationError = '';
       const f = this.forms.priceTarget;
       const row = {
-        customer_id: parseInt(f.customerId),
         commodity: f.commodity,
         target_price: parseFloat(f.targetPrice),
         symbol_year: f.symbolYear || '',
         volume: f.volume || '',
-        unit: f.unit || 'bu',
-        status: 'active',
-        notes: f.notes || ''
+        notes: f.notes || '',
       };
-      const { data } = await _supa.from('price_targets').insert(row).select().single();
-      if (data) this.priceTargets.push(toCamel(data));
+      if (f.id) {
+        row.status = f.status;
+        const { data } = await _supa.from('price_targets').update(row).eq('id', f.id).select().single();
+        if (data) {
+          const idx = this.priceTargets.findIndex(p => p.id === f.id);
+          if (idx > -1) this.priceTargets.splice(idx, 1, toCamel(data));
+        }
+      } else {
+        row.customer_id = parseInt(f.customerId);
+        row.unit = 'bu';
+        row.status = 'active';
+        const { data } = await _supa.from('price_targets').insert(row).select().single();
+        if (data) this.priceTargets.push(toCamel(data));
+      }
       this.modal = null;
     },
     async setPtStatus(id, status) {
