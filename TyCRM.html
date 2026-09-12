@@ -1134,7 +1134,7 @@
       </div>
       <div class="flex gap-3 flex-wrap">
         <select x-model="ptStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-          <option value="active">Active</option><option value="met">Met</option><option value="expired">Expired</option><option value="cancelled">Cancelled</option><option value="">All</option>
+          <option value="active">Active</option><option value="soft">Soft</option><option value="firm">Firm</option><option value="met">Met</option><option value="expired">Expired</option><option value="cancelled">Cancelled</option><option value="">All</option>
         </select>
         <select x-model="ptCommodityFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           <option value="">All commodities</option>
@@ -1168,8 +1168,8 @@
                 <td class="px-4 py-3"><span :class="ptStatusBadge(p.status)" class="inline-flex text-xs px-2 py-1 rounded-full border" x-text="p.status"></span></td>
                 <td class="px-4 py-3">
                   <div class="flex items-center gap-1">
-                    <button x-show="p.status==='active'" @click.stop="setPtStatus(p.id,'met')" class="text-xs px-2 py-1 border border-blue-200 text-blue-600 rounded hover:bg-blue-50" x-text="t('btn_met')"></button>
-                    <button x-show="p.status==='active'" @click.stop="setPtStatus(p.id,'expired')" class="text-xs px-2 py-1 border border-gray-200 text-gray-500 rounded hover:bg-gray-50" x-text="t('btn_expire')"></button>
+                    <button x-show="p.status==='active'||p.status==='soft'||p.status==='firm'" @click.stop="setPtStatus(p.id,'met')" class="text-xs px-2 py-1 border border-blue-200 text-blue-600 rounded hover:bg-blue-50" x-text="t('btn_met')"></button>
+                    <button x-show="p.status==='active'||p.status==='soft'||p.status==='firm'" @click.stop="setPtStatus(p.id,'expired')" class="text-xs px-2 py-1 border border-gray-200 text-gray-500 rounded hover:bg-gray-50" x-text="t('btn_expire')"></button>
                     <button @click.stop="deletePriceTarget(p.id)" class="text-gray-300 hover:text-red-500 ml-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
                   </div>
                 </td>
@@ -3554,7 +3554,7 @@ function app() {
     },
     priSort(p) { return p==='high'?1:p==='medium'?2:3; },
     priBadge(p) { return p==='high'?'text-red-600 bg-red-50 border-red-200':p==='medium'?'text-yellow-700 bg-yellow-50 border-yellow-200':'text-green-700 bg-green-50 border-green-200'; },
-    ptStatusBadge(s) { return s==='active'?'text-green-700 bg-green-50 border-green-200':s==='met'?'text-blue-700 bg-blue-50 border-blue-200':s==='expired'?'text-gray-500 bg-gray-50 border-gray-200':'text-red-600 bg-red-50 border-red-200'; },
+    ptStatusBadge(s) { return s==='active'||s==='soft'||s==='firm'?'text-green-700 bg-green-50 border-green-200':s==='met'?'text-blue-700 bg-blue-50 border-blue-200':s==='expired'?'text-gray-500 bg-gray-50 border-gray-200':'text-red-600 bg-red-50 border-red-200'; },
 
     quickLogInteraction(customer) {
       this.forms.interaction = {
