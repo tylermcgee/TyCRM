@@ -3734,6 +3734,27 @@ function app() {
         const { data: ptData } = await _supa.from('price_targets').insert(ptRow).select().single();
         if (ptData) this.priceTargets.push(toCamel(ptData));
       }
+      if (f.season) {
+        const sdCustomer = this.customers.find(c => c.id == f.customerId);
+        const sdRow = {
+          customer_id: parseInt(f.customerId),
+          customer_name: sdCustomer ? sdCustomer.name : '',
+          interaction_id: iData ? iData.id : null,
+          user_id: this.currentUser.id,
+          season: f.season,
+          spring_planting_intent_corn: f.season === 'spring' ? (f.spring_plantingIntentCorn ?? null) : null,
+          spring_planting_start_date: f.season === 'spring' ? (f.spring_plantingStartDate || null) : null,
+          spring_soil_moisture: f.season === 'spring' ? (f.spring_soilMoisture || null) : null,
+          summer_midseason_activities: f.season === 'summer' ? (f.summer_midseasonActivities || null) : null,
+          summer_crop_health_pests: f.season === 'summer' ? (f.summer_cropHealthPests || null) : null,
+          summer_soil_moisture: f.season === 'summer' ? (f.summer_soilMoisture || null) : null,
+          fall_grain_moisture: f.season === 'fall' ? (f.fall_grainMoisture || null) : null,
+          fall_harvest_start_date: f.season === 'fall' ? (f.fall_harvestStartDate || null) : null,
+          fall_crop_quality: f.season === 'fall' ? (f.fall_cropQuality || null) : null,
+          fall_estimated_yield: f.season === 'fall' ? (f.fall_estimatedYield || null) : null,
+        };
+        await _supa.from('seasonal_data').insert(sdRow);
+      }
       if (f.followUpCheck) {
         const customer = this.customers.find(c => c.id == f.customerId);
         const due = new Date(f.date + 'T12:00:00');
