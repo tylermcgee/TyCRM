@@ -1855,6 +1855,11 @@
               <button type="button" @click="forms.interaction.spring_soilMoisture='high'" :class="forms.interaction.spring_soilMoisture==='high'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors" x-text="t('moisture_high')"></button>
             </div>
           </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
+          </div>
         </div>
         <div x-show="forms.interaction.season==='summer'" class="space-y-3">
           <div>
@@ -1872,6 +1877,11 @@
               <button type="button" @click="forms.interaction.summer_soilMoisture='medium'" :class="forms.interaction.summer_soilMoisture==='medium'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors border-x border-gray-200" x-text="t('moisture_medium')"></button>
               <button type="button" @click="forms.interaction.summer_soilMoisture='high'" :class="forms.interaction.summer_soilMoisture==='high'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors" x-text="t('moisture_high')"></button>
             </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
           </div>
         </div>
         <div x-show="forms.interaction.season==='fall'" class="space-y-3">
@@ -1898,6 +1908,11 @@
           <div>
             <label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_estimated_yield')"></label>
             <input x-model="forms.interaction.fall_estimatedYield" type="text" :placeholder="t('yield_placeholder')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
           </div>
         </div>
       </div>
