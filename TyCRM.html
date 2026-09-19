@@ -2003,6 +2003,10 @@
             <p class="text-xs text-gray-500">Soil Moisture</p>
             <p class="text-sm font-medium text-gray-800 capitalize" x-text="viewingInteraction?.spring_soilMoisture"></p>
           </div>
+          <div x-show="viewingInteraction?.percent_sold != null">
+            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
+          </div>
         </div>
         <!-- Summer -->
         <div x-show="viewingInteraction?.season==='summer'" class="space-y-3">
@@ -2017,6 +2021,10 @@
           <div x-show="viewingInteraction?.summer_soilMoisture">
             <p class="text-xs text-gray-500">Soil Moisture</p>
             <p class="text-sm font-medium text-gray-800 capitalize" x-text="viewingInteraction?.summer_soilMoisture"></p>
+          </div>
+          <div x-show="viewingInteraction?.percent_sold != null">
+            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
           </div>
         </div>
         <!-- Fall -->
@@ -2036,6 +2044,10 @@
           <div x-show="viewingInteraction?.fall_estimatedYield">
             <p class="text-xs text-gray-500">Estimated Yield</p>
             <p class="text-sm font-medium text-gray-800" x-text="viewingInteraction?.fall_estimatedYield"></p>
+          </div>
+          <div x-show="viewingInteraction?.percent_sold != null">
+            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
           </div>
         </div>
       </div>
