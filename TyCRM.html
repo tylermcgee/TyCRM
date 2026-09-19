@@ -2101,6 +2101,9 @@
               <button type="button" @click="forms.interaction.spring_soilMoisture='medium'" :class="forms.interaction.spring_soilMoisture==='medium'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors border-x border-gray-200">Medium</button>
               <button type="button" @click="forms.interaction.spring_soilMoisture='high'" :class="forms.interaction.spring_soilMoisture==='high'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors">High</button>
             </div></div>
+          <div><label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" /></div>
         </div>
         <div x-show="forms.interaction.season==='summer'" class="space-y-3">
           <div><label class="block text-xs font-medium text-gray-700 mb-1">Midseason Activities</label><textarea x-model="forms.interaction.summer_midseasonActivities" rows="2" placeholder="e.g. Applied fungicide..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea></div>
@@ -2111,6 +2114,9 @@
               <button type="button" @click="forms.interaction.summer_soilMoisture='medium'" :class="forms.interaction.summer_soilMoisture==='medium'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors border-x border-gray-200">Medium</button>
               <button type="button" @click="forms.interaction.summer_soilMoisture='high'" :class="forms.interaction.summer_soilMoisture==='high'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors">High</button>
             </div></div>
+          <div><label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" /></div>
         </div>
         <div x-show="forms.interaction.season==='fall'" class="space-y-3">
           <div><label class="block text-xs font-medium text-gray-700 mb-1.5">Grain Moisture</label>
@@ -2127,6 +2133,9 @@
               <button type="button" @click="forms.interaction.fall_cropQuality='high'" :class="forms.interaction.fall_cropQuality==='high'?'bg-brand-600 text-white':'bg-white text-gray-600 hover:bg-gray-50'" class="flex-1 py-1.5 transition-colors">High</button>
             </div></div>
           <div><label class="block text-xs font-medium text-gray-700 mb-1">Estimated Yield</label><input x-model="forms.interaction.fall_estimatedYield" type="text" placeholder="e.g. 185 bu/ac" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" /></div>
+          <div><label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
+            <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" /></div>
         </div>
       </div>
       <div><label class="block text-xs font-medium text-gray-700 mb-1">Notes</label><textarea x-model="forms.interaction.notes" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea></div>
@@ -3140,7 +3149,7 @@ function app() {
     },
     forms: {
       customer: { id:null, name:'', type:'grower', company:'', email:'', phone:'', atlasId:'', cinchId:'', mdmId:'', location:'', street:'', city:'', state:'', county:'', zip:'', notes:'', assignedTo:'', parentId:null, productLines:[], sites:[] },
-      interaction: { customerId:'', type:'call', summary:'', notes:'', date: new Date().toISOString().slice(0,10), commodity:'', priceTarget:'', symbolYear:'', volume:'', season:'spring', spring_plantingIntentCorn:50, spring_plantingStartDate:'', spring_soilMoisture:'', summer_midseasonActivities:'', summer_cropHealthPests:'', summer_soilMoisture:'', fall_grainMoisture:'', fall_harvestStartDate:'', fall_cropQuality:'', fall_estimatedYield:'' },
+      interaction: { customerId:'', type:'call', summary:'', notes:'', date: new Date().toISOString().slice(0,10), commodity:'', priceTarget:'', symbolYear:'', volume:'', season:'spring', spring_plantingIntentCorn:50, spring_plantingStartDate:'', spring_soilMoisture:'', summer_midseasonActivities:'', summer_cropHealthPests:'', summer_soilMoisture:'', fall_grainMoisture:'', fall_harvestStartDate:'', fall_cropQuality:'', fall_estimatedYield:'', percent_sold:0 },
       todo: { customerId:'', title:'', notes:'', dueDate:'', priority:'medium', assignedTo:'' },
       priceTarget: { customerId:'', commodity:'', targetPrice:'', symbolYear:'', volume:'', notes:'' },
       user: { id:null, name:'', email:'', role:'rep', password:'', productLines:[], sites:[] },
@@ -3578,7 +3587,8 @@ function app() {
         fall_grainMoisture: '',
         fall_harvestStartDate: '',
         fall_cropQuality: '',
-        fall_estimatedYield: ''
+        fall_estimatedYield: '',
+        percent_sold: 0
       };
       this.globalSearch = '';
       this.showGlobalDropdown = false;
@@ -3752,6 +3762,7 @@ function app() {
           fall_harvest_start_date: f.season === 'fall' ? (f.fall_harvestStartDate || null) : null,
           fall_crop_quality: f.season === 'fall' ? (f.fall_cropQuality || null) : null,
           fall_estimated_yield: f.season === 'fall' ? (f.fall_estimatedYield || null) : null,
+          percent_sold: f.percent_sold ?? 0,
         };
         await _supa.from('seasonal_data').insert(sdRow);
       }
@@ -3801,6 +3812,7 @@ function app() {
         fall_harvestStartDate: interaction.fall_harvestStartDate || '',
         fall_cropQuality: interaction.fall_cropQuality || '',
         fall_estimatedYield: interaction.fall_estimatedYield || '',
+        percent_sold: interaction.percent_sold ?? 0,
         notes: interaction.notes || '',
         followUpCheck: interaction.followUpCheck || false,
         followUpDays: interaction.followUpDays || 7,
