@@ -1181,6 +1181,148 @@
       </div>
     </div>
 
+    <!-- SITE OVERVIEW -->
+    <div x-show="view==='siteOverview'" class="p-6 max-w-6xl mx-auto space-y-5">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Site Overview</h2>
+          <p class="text-gray-500 text-sm">7-day snapshot of activity at a site</p>
+        </div>
+        <select x-model="soSite" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 min-w-[200px]">
+          <option value="">Select a site…</option>
+          <template x-for="s in sites" :key="s"><option :value="s" x-text="s"></option></template>
+        </select>
+      </div>
+
+      <!-- Empty state -->
+      <div x-show="!soSite" class="text-center py-20">
+        <div class="text-5xl mb-4">🗺️</div>
+        <p class="text-gray-500 text-sm">Select a site above to see its 7-day overview.</p>
+      </div>
+
+      <template x-if="soSite">
+        <div class="space-y-5">
+
+          <!-- Stat pills row -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+              <p class="text-2xl font-bold text-gray-900" x-text="soInteractions7d().length"></p>
+              <p class="text-xs text-gray-500 mt-1">Interactions (7d)</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+              <p class="text-2xl font-bold text-gray-900" x-text="soActivePts().length"></p>
+              <p class="text-xs text-gray-500 mt-1">Active Price Targets</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+              <p class="text-2xl font-bold text-gray-900" x-text="soOpenTodos().length"></p>
+              <p class="text-xs text-gray-500 mt-1">Open To-Dos</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
+              <p class="text-2xl font-bold text-gray-900" x-text="soSiteCustomers().length"></p>
+              <p class="text-xs text-gray-500 mt-1">Customers</p>
+            </div>
+          </div>
+
+          <!-- AI Summary -->
+          <div class="bg-gradient-to-br from-brand-50 to-white border border-brand-200 rounded-xl p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-full bg-brand-500 flex items-center justify-center text-white font-bold text-sm shrink-0">LD</div>
+              <div>
+                <p class="font-semibold text-brand-800 text-sm leading-tight">Louie's 7-Day Site Summary</p>
+                <p class="text-brand-400 text-xs">Auto-generated from recent activity</p>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 leading-relaxed" x-text="buildSoSummary()"></p>
+          </div>
+
+          <!-- Two-col: Recent Interactions + Active Price Targets -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+            <!-- Recent Interactions -->
+            <div class="bg-white rounded-xl border border-gray-200">
+              <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900">Recent Interactions</h3>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soInteractions7d().length + ' this week'"></span>
+              </div>
+              <div class="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+                <template x-for="i in soInteractions7d().slice(0, 12)" :key="i.id">
+                  <div class="px-5 py-3 flex items-start gap-3">
+                    <span class="text-base mt-0.5" x-text="typeIcons[i.type]||'📋'"></span>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-medium text-gray-800 truncate" x-text="customerName(i.customerId)"></p>
+                      <p class="text-xs text-gray-500 truncate" x-text="i.summary"></p>
+                      <p class="text-xs text-gray-400 mt-0.5" x-text="i.date + ' · ' + (i.user || '')"></p>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="soInteractions7d().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No interactions in the last 7 days</div>
+              </div>
+            </div>
+
+            <!-- Active Price Targets -->
+            <div class="bg-white rounded-xl border border-gray-200">
+              <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900">Active Price Targets</h3>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soActivePts().length + ' open'"></span>
+              </div>
+              <div class="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+                <template x-for="p in soActivePts()" :key="p.id">
+                  <div class="px-5 py-3 flex items-center justify-between gap-3">
+                    <div class="min-w-0">
+                      <p class="text-sm font-medium text-gray-800 truncate" x-text="customerName(p.customerId)"></p>
+                      <p class="text-xs text-gray-500" x-text="p.commodity + (p.symbolYear ? ' · ' + p.symbolYear : '')"></p>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <p class="text-sm font-bold text-gray-900" x-text="'$' + p.targetPrice.toFixed(2)"></p>
+                      <span :class="ptStatusBadge(p.status)" class="text-xs px-1.5 py-0.5 rounded-full border" x-text="p.status"></span>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="soActivePts().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No active price targets for this site</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two-col: Leaderboard + Price Target Chart -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+            <!-- Leaderboard -->
+            <div class="bg-white rounded-xl border border-gray-200">
+              <div class="px-5 py-4 border-b border-gray-100">
+                <h3 class="font-semibold text-gray-900">Rep Leaderboard</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Interactions logged in the last 7 days</p>
+              </div>
+              <div class="divide-y divide-gray-100">
+                <template x-for="(u, idx) in soLeaderboard()" :key="u.id">
+                  <div class="px-5 py-3 flex items-center gap-3">
+                    <span class="text-sm font-bold w-6 text-center" :class="idx===0?'text-yellow-500':idx===1?'text-gray-400':idx===2?'text-amber-600':'text-gray-300'" x-text="idx===0?'🥇':idx===1?'🥈':idx===2?'🥉':(idx+1)+'.'"></span>
+                    <div class="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white text-sm font-semibold shrink-0" x-text="u.name.charAt(0)"></div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-gray-800 truncate" x-text="u.name"></p>
+                      <p class="text-xs text-gray-400 capitalize" x-text="u.role"></p>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <p class="text-lg font-bold text-gray-900" x-text="u.count"></p>
+                      <p class="text-xs text-gray-400">interactions</p>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="soLeaderboard().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No users assigned to this site</div>
+              </div>
+            </div>
+
+            <!-- Price Target Chart -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+              <h3 class="font-semibold text-gray-900 mb-1">Price Targets by Symbol / Year</h3>
+              <p class="text-xs text-gray-400 mb-4">Each dot is an active price target — hover for details</p>
+              <div x-html="renderSoPtChart()"></div>
+            </div>
+
+          </div>
+        </div>
+      </template>
+    </div>
+
     <!-- ADMIN -->
     <div x-show="view==='admin'" class="p-6 max-w-5xl mx-auto space-y-6">
       <div class="flex items-center justify-between flex-wrap gap-3">
@@ -1588,6 +1730,11 @@
           :class="view==='priceTargets' ? 'bg-brand-50 text-brand-700' : 'text-gray-700'"
           class="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium active:bg-gray-100">
           <span class="text-lg">🎯</span> <span x-text="t('nav_price_targets')"></span>
+        </button>
+        <button @click="view='siteOverview'; showMobileMore=false"
+          :class="view==='siteOverview' ? 'bg-brand-50 text-brand-700' : 'text-gray-700'"
+          class="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium active:bg-gray-100">
+          <span class="text-lg">🗺️</span> <span>Site Overview</span>
         </button>
         <div x-show="currentUser?.role==='admin'" class="border-t border-gray-100 mt-1 pt-1">
           <button @click="view='admin'; showMobileMore=false"
@@ -3158,6 +3305,7 @@ function app() {
     priceTargets: [],
     sites: [],
     productLines: [],
+    soSite: '',
     siteAdminNewSite: '', siteAdminEditSiteIdx: null, siteAdminEditSiteVal: '',
     siteAdminNewPL: '', siteAdminEditPLIdx: null, siteAdminEditPLVal: '',
     nukeCustomerPw: '', nukeCustomerError: '',
@@ -3171,7 +3319,8 @@ function app() {
         {view:'interactions',icon:'💬',label:this.t('nav_interactions')},
         {view:'todos',icon:'✅',label:this.t('nav_todos')},
         {view:'recommendations',icon:'💡',label:this.t('nav_recommendations')},
-        {view:'priceTargets',icon:'📈',label:this.t('nav_price_targets')}
+        {view:'priceTargets',icon:'📈',label:this.t('nav_price_targets')},
+        {view:'siteOverview',icon:'🗺️',label:'Site Overview'}
       ];
     },
     forms: {
@@ -3588,6 +3737,91 @@ function app() {
       return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${gridLines}${polylines}${xLabels}</svg>
               <div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px">${legendItems}</div>`;
     },
+    // Site Overview helpers
+    soSiteCustomers() {
+      if (!this.soSite) return [];
+      return this.customers.filter(c => (c.sites||[]).includes(this.soSite));
+    },
+    _soCustIds() {
+      return new Set(this.soSiteCustomers().map(c => c.id));
+    },
+    _soCutoff() {
+      const d = new Date(); d.setDate(d.getDate() - 7);
+      return d.toISOString().slice(0, 10);
+    },
+    soInteractions7d() {
+      if (!this.soSite) return [];
+      const ids = this._soCustIds(), cutoff = this._soCutoff();
+      return this.interactions
+        .filter(i => ids.has(parseInt(i.customerId)) && i.date >= cutoff)
+        .sort((a, b) => b.date.localeCompare(a.date));
+    },
+    soActivePts() {
+      if (!this.soSite) return [];
+      const ids = this._soCustIds();
+      return this.priceTargets.filter(p => ids.has(parseInt(p.customerId)) && ['active','soft','firm'].includes(p.status));
+    },
+    soOpenTodos() {
+      if (!this.soSite) return [];
+      const ids = this._soCustIds();
+      return this.todos.filter(t => ids.has(parseInt(t.customerId)) && !t.completed);
+    },
+    soLeaderboard() {
+      if (!this.soSite) return [];
+      const ids = this._soCustIds(), cutoff = this._soCutoff();
+      const recent = this.interactions.filter(i => ids.has(parseInt(i.customerId)) && i.date >= cutoff);
+      return this.users
+        .filter(u => (u.sites||[]).includes(this.soSite))
+        .map(u => ({ ...u, count: recent.filter(i => i.user === u.name).length }))
+        .sort((a, b) => b.count - a.count);
+    },
+    buildSoSummary() {
+      if (!this.soSite) return '';
+      const custs = this.soSiteCustomers();
+      const ints = this.soInteractions7d();
+      const pts = this.soActivePts();
+      const todos = this.soOpenTodos();
+      const recs = this.recommendations ? this.recommendations.filter(r => this._soCustIds().has(parseInt(r.customerId))) : [];
+      const lb = this.soLeaderboard();
+      const topRep = lb.find(u => u.count > 0);
+      const avgPt = pts.length ? (pts.reduce((s, p) => s + p.targetPrice, 0) / pts.length).toFixed(2) : null;
+      let s = `In the last 7 days, ${ints.length} interaction${ints.length !== 1 ? 's were' : ' was'} logged across ${custs.length} customer${custs.length !== 1 ? 's' : ''} at ${this.soSite}.`;
+      if (topRep) s += ` ${topRep.name} led the team with ${topRep.count} interaction${topRep.count !== 1 ? 's' : ''}.`;
+      if (pts.length) s += ` There ${pts.length !== 1 ? 'are' : 'is'} ${pts.length} active price target${pts.length !== 1 ? 's' : ''} with an average of $${avgPt}/bu.`;
+      if (todos.length) { const hi = todos.filter(t => t.priority === 'high').length; s += ` ${todos.length} open to-do${todos.length !== 1 ? 's remain' : ' remains'} for this site${hi > 0 ? `, including ${hi} high priority` : ''}.`; }
+      if (recs.length) s += ` ${recs.length} recommendation${recs.length !== 1 ? 's are' : ' is'} on file for this site's customers.`;
+      if (ints.length === 0 && pts.length === 0) s += ' No recent activity was found — consider reaching out to customers at this site.';
+      return s;
+    },
+    renderSoPtChart() {
+      const pts = this.soActivePts();
+      if (!pts.length) return '<p style="text-align:center;color:#9ca3af;padding:40px 0;font-size:14px">No active price targets for this site</p>';
+      const symbols = [...new Set(pts.map(p => p.symbolYear || p.cropYear || 'N/A'))].sort();
+      const W = 500, H = 220, PL = 54, PT = 10, PB = 48, PR = 12;
+      const cW = W - PL - PR, cH = H - PT - PB;
+      const prices = pts.map(p => p.targetPrice);
+      const minP = Math.min(...prices), maxP = Math.max(...prices);
+      const range = maxP - minP || 1;
+      const xS = sym => symbols.length === 1 ? PL + cW / 2 : PL + (symbols.indexOf(sym) / (symbols.length - 1)) * cW;
+      const yS = v => PT + cH - ((v - minP) / range) * cH;
+      const gridLines = [0, 0.25, 0.5, 0.75, 1].map(t => {
+        const v = minP + range * t, y = PT + cH * (1 - t);
+        return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#f3f4f6" stroke-width="1"/><text x="${PL-4}" y="${y+3.5}" text-anchor="end" font-size="9" fill="#9ca3af">$${v.toFixed(2)}</text>`;
+      }).join('');
+      const xLabels = symbols.map(s => `<text x="${xS(s)}" y="${H-PB+18}" text-anchor="middle" font-size="9" fill="#6b7280">${s}</text>`).join('');
+      const xTicks = symbols.map(s => `<line x1="${xS(s)}" y1="${PT+cH}" x2="${xS(s)}" y2="${PT+cH+4}" stroke="#e5e7eb" stroke-width="1"/>`).join('');
+      const commodities = [...new Set(pts.map(p => p.commodity))];
+      const palette = ['#16a34a','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16'];
+      const colorMap = Object.fromEntries(commodities.map((c, i) => [c, palette[i % palette.length]]));
+      const dots = pts.map(p => {
+        const sym = p.symbolYear || p.cropYear || 'N/A';
+        const color = colorMap[p.commodity] || '#16a34a';
+        return `<circle cx="${xS(sym)}" cy="${yS(p.targetPrice)}" r="6" fill="${color}" fill-opacity="0.85" stroke="white" stroke-width="1.5"><title>${this.customerName(p.customerId)} — ${p.commodity} $${p.targetPrice.toFixed(2)}/bu (${sym})</title></circle>`;
+      }).join('');
+      const legend = commodities.map(c => `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280"><div style="width:10px;height:10px;border-radius:50%;background:${colorMap[c]};flex-shrink:0"></div>${c}</div>`).join('');
+      return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${gridLines}${xTicks}${dots}${xLabels}</svg><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px">${legend}</div>`;
+    },
+
     priSort(p) { return p==='high'?1:p==='medium'?2:3; },
     priBadge(p) { return p==='high'?'text-red-600 bg-red-50 border-red-200':p==='medium'?'text-yellow-700 bg-yellow-50 border-yellow-200':'text-green-700 bg-green-50 border-green-200'; },
     ptStatusBadge(s) { return s==='active'||s==='soft'||s==='firm'?'text-green-700 bg-green-50 border-green-200':s==='met'?'text-blue-700 bg-blue-50 border-blue-200':s==='expired'?'text-gray-500 bg-gray-50 border-gray-200':'text-red-600 bg-red-50 border-red-200'; },
