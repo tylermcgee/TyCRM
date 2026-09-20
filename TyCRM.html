@@ -100,7 +100,7 @@
           :class="view==='dataInOut' ? 'bg-brand-700 text-white' : 'text-brand-100 hover:bg-brand-700/60 hover:text-white'"
           class="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left">
           <span class="text-base leading-none">📥</span>
-          <span>Data In / Out</span>
+          <span x-text="t('nav_data_in_out')"></span>
         </button>
       </div>
     </nav>
@@ -1185,11 +1185,11 @@
     <div x-show="view==='siteOverview'" class="p-6 max-w-6xl mx-auto space-y-5">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">Site Overview</h2>
-          <p class="text-gray-500 text-sm">7-day snapshot of activity at a site</p>
+          <h2 class="text-2xl font-bold text-gray-900" x-text="t('nav_site_overview')"></h2>
+          <p class="text-gray-500 text-sm" x-text="t('so_subtitle')"></p>
         </div>
         <select x-model="soSite" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 min-w-[200px]">
-          <option value="">Select a site…</option>
+          <option value="" x-text="t('so_select_site')"></option>
           <template x-for="s in sites" :key="s"><option :value="s" x-text="s"></option></template>
         </select>
       </div>
@@ -1197,7 +1197,7 @@
       <!-- Empty state -->
       <div x-show="!soSite" class="text-center py-20">
         <div class="text-5xl mb-4">🗺️</div>
-        <p class="text-gray-500 text-sm">Select a site above to see its 7-day overview.</p>
+        <p class="text-gray-500 text-sm" x-text="t('so_empty_state')"></p>
       </div>
 
       <template x-if="soSite">
@@ -1207,19 +1207,19 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
               <p class="text-2xl font-bold text-gray-900" x-text="soInteractions7d().length"></p>
-              <p class="text-xs text-gray-500 mt-1">Interactions (7d)</p>
+              <p class="text-xs text-gray-500 mt-1" x-text="t('so_stat_ints')"></p>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
               <p class="text-2xl font-bold text-gray-900" x-text="soActivePts().length"></p>
-              <p class="text-xs text-gray-500 mt-1">Active Price Targets</p>
+              <p class="text-xs text-gray-500 mt-1" x-text="t('so_stat_pts')"></p>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
               <p class="text-2xl font-bold text-gray-900" x-text="soOpenTodos().length"></p>
-              <p class="text-xs text-gray-500 mt-1">Open To-Dos</p>
+              <p class="text-xs text-gray-500 mt-1" x-text="t('so_stat_todos')"></p>
             </div>
             <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
               <p class="text-2xl font-bold text-gray-900" x-text="soSiteCustomers().length"></p>
-              <p class="text-xs text-gray-500 mt-1">Customers</p>
+              <p class="text-xs text-gray-500 mt-1" x-text="t('so_stat_customers')"></p>
             </div>
           </div>
 
@@ -1228,8 +1228,8 @@
             <div class="flex items-center gap-3 mb-3">
               <div class="w-9 h-9 rounded-full bg-brand-500 flex items-center justify-center text-white font-bold text-sm shrink-0">LD</div>
               <div>
-                <p class="font-semibold text-brand-800 text-sm leading-tight">Louie's 7-Day Site Summary</p>
-                <p class="text-brand-400 text-xs">Auto-generated from recent activity</p>
+                <p class="font-semibold text-brand-800 text-sm leading-tight" x-text="t('so_louie_title')"></p>
+                <p class="text-brand-400 text-xs" x-text="t('so_louie_sub')"></p>
               </div>
             </div>
             <p class="text-sm text-gray-700 leading-relaxed" x-text="buildSoSummary()"></p>
@@ -1241,8 +1241,8 @@
             <!-- Recent Interactions -->
             <div class="bg-white rounded-xl border border-gray-200">
               <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-semibold text-gray-900">Recent Interactions</h3>
-                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soInteractions7d().length + ' this week'"></span>
+                <h3 class="font-semibold text-gray-900" x-text="t('so_recent_ints')"></h3>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soInteractions7d().length + ' ' + t('so_this_week')"></span>
               </div>
               <div class="divide-y divide-gray-50 max-h-80 overflow-y-auto">
                 <template x-for="i in soInteractions7d().slice(0, 12)" :key="i.id">
@@ -1255,15 +1255,15 @@
                     </div>
                   </div>
                 </template>
-                <div x-show="soInteractions7d().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No interactions in the last 7 days</div>
+                <div x-show="soInteractions7d().length === 0" class="px-5 py-8 text-center text-sm text-gray-400" x-text="t('so_no_ints')"></div>
               </div>
             </div>
 
             <!-- Active Price Targets -->
             <div class="bg-white rounded-xl border border-gray-200">
               <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-semibold text-gray-900">Active Price Targets</h3>
-                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soActivePts().length + ' open'"></span>
+                <h3 class="font-semibold text-gray-900" x-text="t('so_stat_pts')"></h3>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium" x-text="soActivePts().length + ' ' + t('so_open')"></span>
               </div>
               <div class="divide-y divide-gray-50 max-h-80 overflow-y-auto">
                 <template x-for="p in soActivePts()" :key="p.id">
@@ -1278,7 +1278,7 @@
                     </div>
                   </div>
                 </template>
-                <div x-show="soActivePts().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No active price targets for this site</div>
+                <div x-show="soActivePts().length === 0" class="px-5 py-8 text-center text-sm text-gray-400" x-text="t('so_no_pts')"></div>
               </div>
             </div>
           </div>
@@ -1289,8 +1289,8 @@
             <!-- Leaderboard -->
             <div class="bg-white rounded-xl border border-gray-200">
               <div class="px-5 py-4 border-b border-gray-100">
-                <h3 class="font-semibold text-gray-900">Rep Leaderboard</h3>
-                <p class="text-xs text-gray-400 mt-0.5">Interactions logged in the last 7 days</p>
+                <h3 class="font-semibold text-gray-900" x-text="t('so_leaderboard')"></h3>
+                <p class="text-xs text-gray-400 mt-0.5" x-text="t('so_leaderboard_sub')"></p>
               </div>
               <div class="divide-y divide-gray-100">
                 <template x-for="(u, idx) in soLeaderboard()" :key="u.id">
@@ -1303,18 +1303,18 @@
                     </div>
                     <div class="text-right shrink-0">
                       <p class="text-lg font-bold text-gray-900" x-text="u.count"></p>
-                      <p class="text-xs text-gray-400">interactions</p>
+                      <p class="text-xs text-gray-400" x-text="t('so_int_label')"></p>
                     </div>
                   </div>
                 </template>
-                <div x-show="soLeaderboard().length === 0" class="px-5 py-8 text-center text-sm text-gray-400">No users assigned to this site</div>
+                <div x-show="soLeaderboard().length === 0" class="px-5 py-8 text-center text-sm text-gray-400" x-text="t('so_no_users')"></div>
               </div>
             </div>
 
             <!-- Price Target Chart -->
             <div class="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 class="font-semibold text-gray-900 mb-1">Price Targets by Symbol / Year</h3>
-              <p class="text-xs text-gray-400 mb-4">Each dot is an active price target — hover for details</p>
+              <h3 class="font-semibold text-gray-900 mb-1" x-text="t('so_chart_title')"></h3>
+              <p class="text-xs text-gray-400 mb-4" x-text="t('so_chart_sub')"></p>
               <div x-html="renderSoPtChart()"></div>
             </div>
 
@@ -1496,7 +1496,7 @@
     <!-- DATA IN / OUT -->
     <div x-show="view==='dataInOut'" class="p-6 max-w-4xl mx-auto space-y-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-900">Data In / Out</h2>
+        <h2 class="text-2xl font-bold text-gray-900" x-text="t('nav_data_in_out')"></h2>
         <p class="text-gray-500 text-sm">Import and export data, or reset tables for a clean slate.</p>
       </div>
 
@@ -1734,7 +1734,7 @@
         <button @click="view='siteOverview'; showMobileMore=false"
           :class="view==='siteOverview' ? 'bg-brand-50 text-brand-700' : 'text-gray-700'"
           class="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium active:bg-gray-100">
-          <span class="text-lg">🗺️</span> <span>Site Overview</span>
+          <span class="text-lg">🗺️</span> <span x-text="t('nav_site_overview')"></span>
         </button>
         <div x-show="currentUser?.role==='admin'" class="border-t border-gray-100 mt-1 pt-1">
           <button @click="view='admin'; showMobileMore=false"
@@ -1750,7 +1750,7 @@
           <button @click="view='dataInOut'; showMobileMore=false"
             :class="view==='dataInOut' ? 'bg-brand-50 text-brand-700' : 'text-gray-700'"
             class="flex items-center gap-3 w-full px-3 py-3 rounded-xl text-sm font-medium active:bg-gray-100">
-            <span class="text-lg">📥</span> <span>Data In / Out</span>
+            <span class="text-lg">📥</span> <span x-text="t('nav_data_in_out')"></span>
           </button>
         </div>
         <div class="border-t border-gray-100 mt-1 pt-1">
@@ -2003,7 +2003,7 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5" x-text="t('lbl_percent_sold')"></label>
             <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
             <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
           </div>
@@ -2026,7 +2026,7 @@
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5" x-text="t('lbl_percent_sold')"></label>
             <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
             <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
           </div>
@@ -2057,7 +2057,7 @@
             <input x-model="forms.interaction.fall_estimatedYield" type="text" :placeholder="t('yield_placeholder')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-700 mb-1.5">Percent Sold</label>
+            <label class="block text-xs font-medium text-gray-700 mb-1.5" x-text="t('lbl_percent_sold')"></label>
             <div class="flex justify-between text-xs font-medium mb-1"><span class="text-brand-700">Sold: <span x-text="forms.interaction.percent_sold"></span>%</span><span class="text-gray-400">Unsold: <span x-text="100-forms.interaction.percent_sold"></span>%</span></div>
             <input type="range" min="0" max="100" step="5" x-model.number="forms.interaction.percent_sold" class="w-full accent-brand-600" />
           </div>
@@ -2166,7 +2166,7 @@
             <p class="text-sm font-medium text-gray-800 capitalize" x-text="viewingInteraction?.spring_soilMoisture"></p>
           </div>
           <div x-show="viewingInteraction?.percent_sold != null">
-            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-xs text-gray-500" x-text="t('lbl_percent_sold')"></p>
             <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
           </div>
         </div>
@@ -2185,7 +2185,7 @@
             <p class="text-sm font-medium text-gray-800 capitalize" x-text="viewingInteraction?.summer_soilMoisture"></p>
           </div>
           <div x-show="viewingInteraction?.percent_sold != null">
-            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-xs text-gray-500" x-text="t('lbl_percent_sold')"></p>
             <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
           </div>
         </div>
@@ -2208,7 +2208,7 @@
             <p class="text-sm font-medium text-gray-800" x-text="viewingInteraction?.fall_estimatedYield"></p>
           </div>
           <div x-show="viewingInteraction?.percent_sold != null">
-            <p class="text-xs text-gray-500">Percent Sold</p>
+            <p class="text-xs text-gray-500" x-text="t('lbl_percent_sold')"></p>
             <p class="text-sm font-medium text-gray-800"><span x-text="viewingInteraction?.percent_sold"></span>% sold · <span x-text="100-(viewingInteraction?.percent_sold||0)"></span>% unsold</p>
           </div>
         </div>
@@ -2359,9 +2359,9 @@
       </div>
       <div><label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_notes')"></label><textarea x-model="forms.todo.notes" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"></textarea></div>
       <div x-show="assignableUsers.length > 1">
-        <label class="block text-xs font-medium text-gray-700 mb-1">Assign To</label>
+        <label class="block text-xs font-medium text-gray-700 mb-1" x-text="t('lbl_assign_to')"></label>
         <select x-model="forms.todo.assignedTo" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-          <option value="">Myself (unassigned)</option>
+          <option value="" x-text="t('opt_myself')"></option>
           <template x-for="u in assignableUsers.filter(u => u.id !== currentUser?.id)" :key="u.id">
             <option :value="u.id" x-text="u.name + (u.role === 'admin' ? ' (Admin)' : '')"></option>
           </template>
@@ -2433,14 +2433,14 @@
         </template>
         <template x-if="viewingTodo?.assignedTo && viewingTodo?.assignedTo !== currentUser?.id">
           <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Assigned To</dt>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5" x-text="t('lbl_assigned_to')"></dt>
             <dd class="text-sm text-gray-900" x-text="users.find(u=>u.id===viewingTodo?.assignedTo)?.name || 'Unknown'"></dd>
           </div>
         </template>
         <template x-if="viewingTodo?.assignedTo === currentUser?.id">
           <div>
-            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5">Assigned To</dt>
-            <dd class="text-sm text-brand-700 font-medium">You</dd>
+            <dt class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-0.5" x-text="t('lbl_assigned_to')"></dt>
+            <dd class="text-sm text-brand-700 font-medium" x-text="t('you_indicator')"></dd>
           </div>
         </template>
         <template x-if="viewingTodo?.createdBy && viewingTodo?.createdBy !== currentUser?.id">
@@ -2716,7 +2716,18 @@ const tr = {
     btn_add:'Add', site_admin_title:'Site Administration',
     site_admin_subtitle:'Manage locations and product lines available across the platform',
     sa_sites:'Sites', sa_no_sites:'No sites configured.', sa_new_site_placeholder:'New site name...',
-    sa_product_lines:'Product Lines', sa_no_pl:'No product lines configured.', sa_new_pl_placeholder:'New product line...'
+    sa_product_lines:'Product Lines', sa_no_pl:'No product lines configured.', sa_new_pl_placeholder:'New product line...',
+    nav_site_overview:'Site Overview', nav_data_in_out:'Data In / Out',
+    so_subtitle:'7-day snapshot of activity at a site', so_select_site:'Select a site…',
+    so_empty_state:'Select a site above to see its 7-day overview.',
+    so_stat_ints:'Interactions (7d)', so_stat_pts:'Active Price Targets', so_stat_todos:'Open To-Dos', so_stat_customers:'Customers',
+    so_louie_title:"Louie's 7-Day Site Summary", so_louie_sub:'Auto-generated from recent activity',
+    so_recent_ints:'Recent Interactions', so_this_week:'this week', so_open:'open',
+    so_no_ints:'No interactions in the last 7 days', so_no_pts:'No active price targets for this site',
+    so_leaderboard:'Rep Leaderboard', so_leaderboard_sub:'Interactions logged in the last 7 days',
+    so_int_label:'interactions', so_no_users:'No users assigned to this site',
+    so_chart_title:'Price Targets by Symbol / Year', so_chart_sub:'Each dot is an active price target — hover for details',
+    lbl_percent_sold:'Percent Sold', lbl_assign_to:'Assign To', opt_myself:'Myself (unassigned)', lbl_assigned_to:'Assigned To'
   },
   es: {
     nav_dashboard:'Panel', nav_customers:'Clientes', nav_interactions:'Interacciones', nav_todos:'Tareas',
@@ -2798,7 +2809,18 @@ const tr = {
     btn_add:'Agregar', site_admin_title:'Administración del Sitio',
     site_admin_subtitle:'Gestionar ubicaciones y líneas de productos disponibles en la plataforma',
     sa_sites:'Sitios', sa_no_sites:'No hay sitios configurados.', sa_new_site_placeholder:'Nombre del nuevo sitio...',
-    sa_product_lines:'Líneas de Productos', sa_no_pl:'No hay líneas de productos configuradas.', sa_new_pl_placeholder:'Nueva línea de productos...'
+    sa_product_lines:'Líneas de Productos', sa_no_pl:'No hay líneas de productos configuradas.', sa_new_pl_placeholder:'Nueva línea de productos...',
+    nav_site_overview:'Resumen del Sitio', nav_data_in_out:'Entrada / Salida de Datos',
+    so_subtitle:'Resumen de 7 días de actividad en un sitio', so_select_site:'Seleccionar un sitio…',
+    so_empty_state:'Selecciona un sitio arriba para ver su resumen de 7 días.',
+    so_stat_ints:'Interacciones (7d)', so_stat_pts:'Objetivos de Precio Activos', so_stat_todos:'Tareas Abiertas', so_stat_customers:'Clientes',
+    so_louie_title:'Resumen de 7 Días de Louie', so_louie_sub:'Generado automáticamente desde la actividad reciente',
+    so_recent_ints:'Interacciones Recientes', so_this_week:'esta semana', so_open:'abiertos',
+    so_no_ints:'No hay interacciones en los últimos 7 días', so_no_pts:'No hay objetivos de precio activos para este sitio',
+    so_leaderboard:'Clasificación de Representantes', so_leaderboard_sub:'Interacciones registradas en los últimos 7 días',
+    so_int_label:'interacciones', so_no_users:'No hay usuarios asignados a este sitio',
+    so_chart_title:'Objetivos de Precio por Símbolo / Año', so_chart_sub:'Cada punto es un objetivo activo — pasa el cursor para ver detalles',
+    lbl_percent_sold:'Porcentaje Vendido', lbl_assign_to:'Asignar A', opt_myself:'Yo mismo (sin asignar)', lbl_assigned_to:'Asignado A'
   },
   fr: {
     nav_dashboard:'Tableau de bord', nav_customers:'Clients', nav_interactions:'Interactions', nav_todos:'Tâches',
@@ -2880,7 +2902,18 @@ const tr = {
     btn_add:'Ajouter', site_admin_title:'Administration du site',
     site_admin_subtitle:'Gérer les emplacements et les gammes de produits disponibles sur la plateforme',
     sa_sites:'Sites', sa_no_sites:'Aucun site configuré.', sa_new_site_placeholder:'Nom du nouveau site...',
-    sa_product_lines:'Gammes de produits', sa_no_pl:'Aucune gamme de produits configurée.', sa_new_pl_placeholder:'Nouvelle gamme de produits...'
+    sa_product_lines:'Gammes de produits', sa_no_pl:'Aucune gamme de produits configurée.', sa_new_pl_placeholder:'Nouvelle gamme de produits...',
+    nav_site_overview:'Vue du site', nav_data_in_out:'Données entrantes / sortantes',
+    so_subtitle:"Aperçu de 7 jours d'activité sur un site", so_select_site:'Sélectionner un site…',
+    so_empty_state:'Sélectionnez un site ci-dessus pour voir son aperçu de 7 jours.',
+    so_stat_ints:'Interactions (7j)', so_stat_pts:'Objectifs de prix actifs', so_stat_todos:'Tâches ouvertes', so_stat_customers:'Clients',
+    so_louie_title:'Résumé 7 jours de Louie', so_louie_sub:"Généré automatiquement à partir de l'activité récente",
+    so_recent_ints:'Interactions récentes', so_this_week:'cette semaine', so_open:'ouverts',
+    so_no_ints:'Aucune interaction dans les 7 derniers jours', so_no_pts:'Aucun objectif de prix actif pour ce site',
+    so_leaderboard:'Classement des représentants', so_leaderboard_sub:'Interactions enregistrées dans les 7 derniers jours',
+    so_int_label:'interactions', so_no_users:'Aucun utilisateur assigné à ce site',
+    so_chart_title:'Objectifs de prix par symbole / année', so_chart_sub:'Chaque point est un objectif actif — survolez pour les détails',
+    lbl_percent_sold:'Pourcentage vendu', lbl_assign_to:'Assigner à', opt_myself:'Moi-même (non assigné)', lbl_assigned_to:'Assigné à'
   },
   de: {
     nav_dashboard:'Dashboard', nav_customers:'Kunden', nav_interactions:'Interaktionen', nav_todos:'Aufgaben',
@@ -2962,7 +2995,18 @@ const tr = {
     btn_add:'Hinzufügen', site_admin_title:'Standortverwaltung',
     site_admin_subtitle:'Standorte und Produktlinien verwalten, die auf der Plattform verfügbar sind',
     sa_sites:'Standorte', sa_no_sites:'Keine Standorte konfiguriert.', sa_new_site_placeholder:'Neuer Standortname...',
-    sa_product_lines:'Produktlinien', sa_no_pl:'Keine Produktlinien konfiguriert.', sa_new_pl_placeholder:'Neue Produktlinie...'
+    sa_product_lines:'Produktlinien', sa_no_pl:'Keine Produktlinien konfiguriert.', sa_new_pl_placeholder:'Neue Produktlinie...',
+    nav_site_overview:'Standortübersicht', nav_data_in_out:'Dateneingabe / -ausgabe',
+    so_subtitle:'7-Tage-Überblick der Aktivitäten an einem Standort', so_select_site:'Standort auswählen…',
+    so_empty_state:'Wählen Sie oben einen Standort aus, um den 7-Tage-Überblick zu sehen.',
+    so_stat_ints:'Interaktionen (7T)', so_stat_pts:'Aktive Preisziele', so_stat_todos:'Offene Aufgaben', so_stat_customers:'Kunden',
+    so_louie_title:'Louies 7-Tage-Standortübersicht', so_louie_sub:'Automatisch aus aktuellen Aktivitäten generiert',
+    so_recent_ints:'Aktuelle Interaktionen', so_this_week:'diese Woche', so_open:'offen',
+    so_no_ints:'Keine Interaktionen in den letzten 7 Tagen', so_no_pts:'Keine aktiven Preisziele für diesen Standort',
+    so_leaderboard:'Rangliste der Vertreter', so_leaderboard_sub:'In den letzten 7 Tagen protokollierte Interaktionen',
+    so_int_label:'Interaktionen', so_no_users:'Keine Benutzer diesem Standort zugewiesen',
+    so_chart_title:'Preisziele nach Symbol / Jahr', so_chart_sub:'Jeder Punkt ist ein aktives Preisziel — für Details hover',
+    lbl_percent_sold:'Verkaufsanteil', lbl_assign_to:'Zuweisen an', opt_myself:'Ich selbst (nicht zugewiesen)', lbl_assigned_to:'Zugewiesen an'
   },
   pt: {
     nav_dashboard:'Painel', nav_customers:'Clientes', nav_interactions:'Interações', nav_todos:'Tarefas',
@@ -3044,7 +3088,18 @@ const tr = {
     btn_add:'Adicionar', site_admin_title:'Administração do Site',
     site_admin_subtitle:'Gerenciar locais e linhas de produtos disponíveis na plataforma',
     sa_sites:'Sites', sa_no_sites:'Nenhum site configurado.', sa_new_site_placeholder:'Nome do novo site...',
-    sa_product_lines:'Linhas de Produtos', sa_no_pl:'Nenhuma linha de produtos configurada.', sa_new_pl_placeholder:'Nova linha de produtos...'
+    sa_product_lines:'Linhas de Produtos', sa_no_pl:'Nenhuma linha de produtos configurada.', sa_new_pl_placeholder:'Nova linha de produtos...',
+    nav_site_overview:'Visão Geral do Site', nav_data_in_out:'Entrada / Saída de Dados',
+    so_subtitle:'Resumo de 7 dias de atividade em um site', so_select_site:'Selecionar um site…',
+    so_empty_state:'Selecione um site acima para ver o resumo de 7 dias.',
+    so_stat_ints:'Interações (7d)', so_stat_pts:'Metas de Preço Ativas', so_stat_todos:'Tarefas Abertas', so_stat_customers:'Clientes',
+    so_louie_title:'Resumo de 7 Dias do Louie', so_louie_sub:'Gerado automaticamente a partir da atividade recente',
+    so_recent_ints:'Interações Recentes', so_this_week:'esta semana', so_open:'abertos',
+    so_no_ints:'Nenhuma interação nos últimos 7 dias', so_no_pts:'Nenhuma meta de preço ativa para este site',
+    so_leaderboard:'Classificação de Representantes', so_leaderboard_sub:'Interações registradas nos últimos 7 dias',
+    so_int_label:'interações', so_no_users:'Nenhum usuário atribuído a este site',
+    so_chart_title:'Metas de Preço por Símbolo / Ano', so_chart_sub:'Cada ponto é uma meta ativa — passe o mouse para detalhes',
+    lbl_percent_sold:'Percentual Vendido', lbl_assign_to:'Atribuir A', opt_myself:'Eu mesmo (não atribuído)', lbl_assigned_to:'Atribuído A'
   },
   zh: {
     nav_dashboard:'仪表板', nav_customers:'客户', nav_interactions:'互动记录', nav_todos:'待办事项',
@@ -3126,7 +3181,18 @@ const tr = {
     btn_add:'添加', site_admin_title:'站点管理',
     site_admin_subtitle:'管理平台上可用的地点和产品线',
     sa_sites:'站点', sa_no_sites:'尚未配置站点。', sa_new_site_placeholder:'新站点名称...',
-    sa_product_lines:'产品线', sa_no_pl:'尚未配置产品线。', sa_new_pl_placeholder:'新产品线...'
+    sa_product_lines:'产品线', sa_no_pl:'尚未配置产品线。', sa_new_pl_placeholder:'新产品线...',
+    nav_site_overview:'站点概览', nav_data_in_out:'数据输入/输出',
+    so_subtitle:'站点最近7天活动快照', so_select_site:'选择站点…',
+    so_empty_state:'请在上方选择一个站点以查看其7天概览。',
+    so_stat_ints:'互动次数（7天）', so_stat_pts:'活跃价格目标', so_stat_todos:'未完成待办', so_stat_customers:'客户',
+    so_louie_title:'Louie 的7天站点摘要', so_louie_sub:'根据近期活动自动生成',
+    so_recent_ints:'最近互动', so_this_week:'本周', so_open:'开放',
+    so_no_ints:'最近7天无互动记录', so_no_pts:'此站点无活跃价格目标',
+    so_leaderboard:'代表排行榜', so_leaderboard_sub:'最近7天记录的互动次数',
+    so_int_label:'次互动', so_no_users:'此站点无分配用户',
+    so_chart_title:'按代码/年份划分的价格目标', so_chart_sub:'每个点代表一个活跃价格目标 — 悬停查看详情',
+    lbl_percent_sold:'已售百分比', lbl_assign_to:'分配给', opt_myself:'自己（未分配）', lbl_assigned_to:'分配给'
   }
 };
 
@@ -3320,7 +3386,7 @@ function app() {
         {view:'todos',icon:'✅',label:this.t('nav_todos')},
         {view:'recommendations',icon:'💡',label:this.t('nav_recommendations')},
         {view:'priceTargets',icon:'📈',label:this.t('nav_price_targets')},
-        {view:'siteOverview',icon:'🗺️',label:'Site Overview'}
+        {view:'siteOverview',icon:'🗺️',label:this.t('nav_site_overview')}
       ];
     },
     forms: {
