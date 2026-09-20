@@ -1233,6 +1233,18 @@
               </div>
             </div>
             <p class="text-sm text-gray-700 leading-relaxed" x-text="buildSoSummary()"></p>
+            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-brand-100">
+              <button @click="showDailyWireModal=true" class="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-medium rounded-lg transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span x-text="t('so_gen_daily_wire')"></span>
+                <span class="bg-white/20 text-white/80 px-1.5 py-0.5 rounded text-[10px] font-normal leading-none" x-text="t('so_placeholder_badge')"></span>
+              </button>
+              <button @click="showWeeklyReportModal=true" class="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-brand-50 active:bg-brand-100 border border-brand-200 text-brand-700 text-xs font-medium rounded-lg transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span x-text="t('so_gen_weekly_report')"></span>
+                <span class="bg-brand-100 text-brand-500 px-1.5 py-0.5 rounded text-[10px] font-normal leading-none" x-text="t('so_placeholder_badge')"></span>
+              </button>
+            </div>
           </div>
 
           <!-- Two-col: Recent Interactions + Active Price Targets -->
@@ -1767,6 +1779,190 @@
     </div>
   </div>
 
+
+  <!-- Daily Wire Modal -->
+  <div x-show="showDailyWireModal" @click.self="showDailyWireModal=false"
+    class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+    x-transition:enter="transition-opacity duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col" @click.stop>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div>
+          <p class="font-semibold text-gray-900" x-text="t('so_daily_wire_title')"></p>
+          <p class="text-xs text-gray-400 mt-0.5" x-text="t('so_placeholder_notice')"></p>
+        </div>
+        <button @click="showDailyWireModal=false" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-6 py-4">
+        <pre class="text-xs text-gray-700 font-mono leading-relaxed whitespace-pre-wrap">DAILY GRAIN MARKET WIRE
+Date: September 19, 2026  |  Prepared by: Louie AI
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OVERNIGHT FUTURES (6:00 AM CT)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Corn   Dec  (ZCZ6)   482'0   +2¼
+Soy    Nov  (ZSX6)  1043'0   +5¼
+Wheat  Dec  (ZWZ6)   568'2   -1¼
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MARKET COMMENTARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CORN — Overnight trade firmer on drying forecasts across the eastern Corn
+Belt. Export inspections 52.3 MB vs. 48–55 MB estimate. Harvest pressure
+expected to build through next week as conditions improve.
+
+SOYBEANS — Strong session. Crush margins holding at $1.42/bu. Chinese
+import pace tracking above USDA seasonal estimate. NOPA crush data due
+Thursday 10am CT — watch for upside surprise.
+
+WHEAT — Softer. HRW basis easing at Gulf. Russian export pace steady.
+Spring wheat harvest 91% complete in northern Plains.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SITE ACTIVITY — LAST 7 DAYS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Interactions logged:       12
+Customers contacted:        8
+Active price targets:       7  (5 corn · 2 soy)
+Open to-dos:                2
+Top rep: J. Williams (5 interactions)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INDICATIVE BASIS (Track)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Corn       -28¢   Flat: 454'0
+Soybeans   +12¢   Flat: 1055'0
+Wheat      -55¢   Flat: 513'2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TODAY'S TALKING POINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• 2 corn targets ($4.95–$5.05 Dec) within $0.05 of market — follow up
+• Growers holding >30% unsold old crop: reinforce Oct 1 basis risk
+• Wet forecast next week — alert accounts re: drying capacity
+• New-crop 2027 corn: early interest emerging, worth mentioning
+
+*** PLACEHOLDER — AI GENERATION COMING SOON ***</pre>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-between items-center gap-3">
+        <button @click="navigator.clipboard.writeText($el.closest('.flex.flex-col').querySelector('pre').textContent); wireCopied=true; setTimeout(()=>wireCopied=false,2000)"
+          class="flex items-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span x-text="wireCopied ? t('so_copied') : t('so_copy_clipboard')"></span>
+        </button>
+        <button @click="showDailyWireModal=false" class="px-4 py-2 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors" x-text="t('close')"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Report Modal -->
+  <div x-show="showWeeklyReportModal" @click.self="showWeeklyReportModal=false"
+    class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4"
+    x-transition:enter="transition-opacity duration-150" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col" @click.stop>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div>
+          <p class="font-semibold text-gray-900" x-text="t('so_weekly_report_title')"></p>
+          <p class="text-xs text-gray-400 mt-0.5" x-text="t('so_placeholder_notice')"></p>
+        </div>
+        <button @click="showWeeklyReportModal=false" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-6 py-4">
+        <pre class="text-xs text-gray-700 font-mono leading-relaxed whitespace-pre-wrap">WEEKLY GRAIN MERCHANDISING REPORT
+Week Ending: September 19, 2026  |  Prepared by: Louie AI
+
+═══════════════════════════════════════════════
+EXECUTIVE SUMMARY
+═══════════════════════════════════════════════
+Activity at this site remained above seasonal average this week, with
+strong grower engagement on corn pricing. Soybean basis firmed 8¢ over
+the past 10 sessions. Three price targets are at or near trigger levels.
+
+═══════════════════════════════════════════════
+MARKET CONDITIONS
+═══════════════════════════════════════════════
+CORN
+  Futures (Dec):   482'0   (+12¼ wk/wk)
+  Local basis:     -28 track   (-5¢ wk/wk)
+  Harvest:         18% complete vs. 22% 5-yr avg
+  Commercial stocks: 1.112 BB (+4% yr/yr)
+
+SOYBEANS
+  Futures (Nov):  1043'0   (+28¾ wk/wk)
+  Local basis:     +12 track   (+8¢ wk/wk)
+  Crush margins:   $1.42/bu — historically strong
+  Export sales:    89.4 MB committed (96% of USDA annual est.)
+
+WHEAT
+  Futures (Dec):   568'2   (-8¾ wk/wk)
+  Local basis:     -55 track (unchanged)
+  Spring harvest:  91% complete in northern Plains
+
+═══════════════════════════════════════════════
+SITE PERFORMANCE — 7 DAYS
+═══════════════════════════════════════════════
+Interactions logged:          12
+Unique customers contacted:    8
+Active price targets:          7  (5 corn · 2 soybean)
+Price targets met this week:   1
+Price targets expired:         0
+Open to-dos:                   2
+Estimated new bushels priced:  45,000
+
+Rep Leaderboard:
+  1st   J. Williams    5 interactions
+  2nd   S. Patel       4 interactions
+  3rd   M. Johnson     3 interactions
+
+═══════════════════════════════════════════════
+PRICE TARGET ANALYSIS
+═══════════════════════════════════════════════
+• 2 corn targets ($4.95–$5.05 Dec) within $0.05 of current market
+• 1 soybean target ($10.60 Nov) triggered Monday — follow-up pending
+• 3 targets set >90 days ago — review for relevance recommended
+
+═══════════════════════════════════════════════
+GROWER SENTIMENT
+═══════════════════════════════════════════════
+• Corn sellers resistant below $5.00 Dec — looking for rally
+• New-crop 2027 corn hedge interest emerging among early planters
+• Soybean sellers more motivated: basis strength + crush premium
+• Concerns noted re: input costs and delayed harvest from recent rains
+
+═══════════════════════════════════════════════
+RECOMMENDATIONS FOR NEXT WEEK
+═══════════════════════════════════════════════
+□  Follow up on 2 open to-dos (Smith Farms · Jones Bros basis)
+□  Contact 3 growers with >40% unsold old crop — window narrowing
+□  Update targets for customers who have priced >80% of expected crop
+□  Schedule site visit for NW territory (4 accounts, no contact >30d)
+□  Monitor Thursday NOPA crush — potential soybean basis catalyst
+
+═══════════════════════════════════════════════
+UPCOMING MARKET EVENTS
+═══════════════════════════════════════════════
+Mon Sep 22  Export Inspections (USDA), 10:00am CT
+Thu Sep 25  NOPA Crush (Aug), 10:00am CT
+Fri Sep 26  CFTC Commitment of Traders, 3:30pm CT
+Mon Sep 29  USDA Grain Stocks & Small Grains Summary
+
+*** PLACEHOLDER — AI GENERATION COMING SOON ***</pre>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-between items-center gap-3">
+        <button @click="navigator.clipboard.writeText($el.closest('.flex.flex-col').querySelector('pre').textContent); reportCopied=true; setTimeout(()=>reportCopied=false,2000)"
+          class="flex items-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span x-text="reportCopied ? t('so_copied') : t('so_copy_clipboard')"></span>
+        </button>
+        <button @click="showWeeklyReportModal=false" class="px-4 py-2 border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors" x-text="t('close')"></button>
+      </div>
+    </div>
+  </div>
 
   <!-- Louie AI Panel -->
   <div x-show="showLouiePanel" @click.self="showLouiePanel=false"
@@ -2722,6 +2918,10 @@ const tr = {
     so_empty_state:'Select a site above to see its 7-day overview.',
     so_stat_ints:'Interactions (7d)', so_stat_pts:'Active Price Targets', so_stat_todos:'Open To-Dos', so_stat_customers:'Customers',
     so_louie_title:"Louie's 7-Day Site Summary", so_louie_sub:'Auto-generated from recent activity',
+    so_gen_daily_wire:'Generate Daily Wire', so_gen_weekly_report:'Generate Weekly Report',
+    so_placeholder_badge:'Placeholder', so_placeholder_notice:'This is placeholder content — AI generation coming soon.',
+    so_daily_wire_title:'Daily Trading Wire', so_weekly_report_title:'Weekly Site Report',
+    so_copy_clipboard:'Copy to Clipboard', so_copied:'Copied!',
     so_recent_ints:'Recent Interactions', so_this_week:'this week', so_open:'open',
     so_no_ints:'No interactions in the last 7 days', so_no_pts:'No active price targets for this site',
     so_leaderboard:'Rep Leaderboard', so_leaderboard_sub:'Interactions logged in the last 7 days',
@@ -2815,6 +3015,10 @@ const tr = {
     so_empty_state:'Selecciona un sitio arriba para ver su resumen de 7 días.',
     so_stat_ints:'Interacciones (7d)', so_stat_pts:'Objetivos de Precio Activos', so_stat_todos:'Tareas Abiertas', so_stat_customers:'Clientes',
     so_louie_title:'Resumen de 7 Días de Louie', so_louie_sub:'Generado automáticamente desde la actividad reciente',
+    so_gen_daily_wire:'Generar Boletín Diario', so_gen_weekly_report:'Generar Informe Semanal',
+    so_placeholder_badge:'Marcador', so_placeholder_notice:'Este es contenido de marcador — la generación de IA llegará pronto.',
+    so_daily_wire_title:'Boletín Diario de Comercio', so_weekly_report_title:'Informe Semanal del Sitio',
+    so_copy_clipboard:'Copiar al Portapapeles', so_copied:'¡Copiado!',
     so_recent_ints:'Interacciones Recientes', so_this_week:'esta semana', so_open:'abiertos',
     so_no_ints:'No hay interacciones en los últimos 7 días', so_no_pts:'No hay objetivos de precio activos para este sitio',
     so_leaderboard:'Clasificación de Representantes', so_leaderboard_sub:'Interacciones registradas en los últimos 7 días',
@@ -2908,6 +3112,10 @@ const tr = {
     so_empty_state:'Sélectionnez un site ci-dessus pour voir son aperçu de 7 jours.',
     so_stat_ints:'Interactions (7j)', so_stat_pts:'Objectifs de prix actifs', so_stat_todos:'Tâches ouvertes', so_stat_customers:'Clients',
     so_louie_title:'Résumé 7 jours de Louie', so_louie_sub:"Généré automatiquement à partir de l'activité récente",
+    so_gen_daily_wire:'Générer le Fil Quotidien', so_gen_weekly_report:'Générer le Rapport Hebdomadaire',
+    so_placeholder_badge:'Ébauche', so_placeholder_notice:"Ceci est un contenu provisoire — la génération IA arrive bientôt.",
+    so_daily_wire_title:'Fil Quotidien de Trading', so_weekly_report_title:'Rapport Hebdomadaire du Site',
+    so_copy_clipboard:'Copier dans le Presse-papiers', so_copied:'Copié !',
     so_recent_ints:'Interactions récentes', so_this_week:'cette semaine', so_open:'ouverts',
     so_no_ints:'Aucune interaction dans les 7 derniers jours', so_no_pts:'Aucun objectif de prix actif pour ce site',
     so_leaderboard:'Classement des représentants', so_leaderboard_sub:'Interactions enregistrées dans les 7 derniers jours',
@@ -3001,6 +3209,10 @@ const tr = {
     so_empty_state:'Wählen Sie oben einen Standort aus, um den 7-Tage-Überblick zu sehen.',
     so_stat_ints:'Interaktionen (7T)', so_stat_pts:'Aktive Preisziele', so_stat_todos:'Offene Aufgaben', so_stat_customers:'Kunden',
     so_louie_title:'Louies 7-Tage-Standortübersicht', so_louie_sub:'Automatisch aus aktuellen Aktivitäten generiert',
+    so_gen_daily_wire:'Täglichen Draht Generieren', so_gen_weekly_report:'Wochenbericht Generieren',
+    so_placeholder_badge:'Platzhalter', so_placeholder_notice:'Dies ist Platzhalterinhalt — KI-Generierung kommt bald.',
+    so_daily_wire_title:'Täglicher Handelsdraht', so_weekly_report_title:'Wöchentlicher Standortbericht',
+    so_copy_clipboard:'In Zwischenablage Kopieren', so_copied:'Kopiert!',
     so_recent_ints:'Aktuelle Interaktionen', so_this_week:'diese Woche', so_open:'offen',
     so_no_ints:'Keine Interaktionen in den letzten 7 Tagen', so_no_pts:'Keine aktiven Preisziele für diesen Standort',
     so_leaderboard:'Rangliste der Vertreter', so_leaderboard_sub:'In den letzten 7 Tagen protokollierte Interaktionen',
@@ -3094,6 +3306,10 @@ const tr = {
     so_empty_state:'Selecione um site acima para ver o resumo de 7 dias.',
     so_stat_ints:'Interações (7d)', so_stat_pts:'Metas de Preço Ativas', so_stat_todos:'Tarefas Abertas', so_stat_customers:'Clientes',
     so_louie_title:'Resumo de 7 Dias do Louie', so_louie_sub:'Gerado automaticamente a partir da atividade recente',
+    so_gen_daily_wire:'Gerar Boletim Diário', so_gen_weekly_report:'Gerar Relatório Semanal',
+    so_placeholder_badge:'Esboço', so_placeholder_notice:'Este é um conteúdo provisório — a geração por IA chegará em breve.',
+    so_daily_wire_title:'Boletim Diário de Negociação', so_weekly_report_title:'Relatório Semanal do Site',
+    so_copy_clipboard:'Copiar para a Área de Transferência', so_copied:'Copiado!',
     so_recent_ints:'Interações Recentes', so_this_week:'esta semana', so_open:'abertos',
     so_no_ints:'Nenhuma interação nos últimos 7 dias', so_no_pts:'Nenhuma meta de preço ativa para este site',
     so_leaderboard:'Classificação de Representantes', so_leaderboard_sub:'Interações registradas nos últimos 7 dias',
@@ -3187,6 +3403,10 @@ const tr = {
     so_empty_state:'请在上方选择一个站点以查看其7天概览。',
     so_stat_ints:'互动次数（7天）', so_stat_pts:'活跃价格目标', so_stat_todos:'未完成待办', so_stat_customers:'客户',
     so_louie_title:'Louie 的7天站点摘要', so_louie_sub:'根据近期活动自动生成',
+    so_gen_daily_wire:'生成每日电报', so_gen_weekly_report:'生成每周报告',
+    so_placeholder_badge:'占位符', so_placeholder_notice:'这是占位符内容 — AI 生成功能即将推出。',
+    so_daily_wire_title:'每日交易电报', so_weekly_report_title:'每周站点报告',
+    so_copy_clipboard:'复制到剪贴板', so_copied:'已复制！',
     so_recent_ints:'最近互动', so_this_week:'本周', so_open:'开放',
     so_no_ints:'最近7天无互动记录', so_no_pts:'此站点无活跃价格目标',
     so_leaderboard:'代表排行榜', so_leaderboard_sub:'最近7天记录的互动次数',
@@ -3323,6 +3543,10 @@ function app() {
     showGlobalDropdown: false,
     showMobileMore: false,
     showLouiePanel: false,
+    showDailyWireModal: false,
+    showWeeklyReportModal: false,
+    wireCopied: false,
+    reportCopied: false,
     showNotifications: false,
     notifications: [],
     showHeartEgg: false,
