@@ -1331,6 +1331,26 @@
             </div>
 
           </div>
+
+          <!-- Weekly Interaction Volume -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
+              <div>
+                <h3 class="font-semibold text-gray-900" x-text="t('so_weekly_chart_title')"></h3>
+                <p class="text-xs text-gray-400 mt-0.5" x-text="t('so_weekly_chart_sub')"></p>
+              </div>
+              <label class="flex items-center gap-2 cursor-pointer shrink-0 select-none">
+                <span class="text-xs text-gray-500" x-text="t('so_sample_data')"></span>
+                <div class="relative inline-flex items-center">
+                  <input type="checkbox" x-model="soUseSampleData" class="sr-only">
+                  <div :class="soUseSampleData ? 'bg-brand-600' : 'bg-gray-200'" class="w-9 h-5 rounded-full transition-colors duration-200"></div>
+                  <div :class="soUseSampleData ? 'translate-x-4' : 'translate-x-0.5'" class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200"></div>
+                </div>
+              </label>
+            </div>
+            <div x-html="renderSoWeeklyChart()"></div>
+          </div>
+
         </div>
       </template>
     </div>
@@ -2927,6 +2947,8 @@ const tr = {
     so_leaderboard:'Rep Leaderboard', so_leaderboard_sub:'Interactions logged in the last 7 days',
     so_int_label:'interactions', so_no_users:'No users assigned to this site',
     so_chart_title:'Price Targets by Symbol / Year', so_chart_sub:'Each dot is an active price target — hover for details',
+    so_weekly_chart_title:'Weekly Interaction Volume', so_weekly_chart_sub:'Bars = this year · Line = same period last year',
+    so_sample_data:'Sample Data', so_wc_this_year:'This Year (weekly)', so_wc_prior_year:'Prior Year',
     lbl_percent_sold:'Percent Sold', lbl_assign_to:'Assign To', opt_myself:'Myself (unassigned)', lbl_assigned_to:'Assigned To'
   },
   es: {
@@ -3024,6 +3046,8 @@ const tr = {
     so_leaderboard:'Clasificación de Representantes', so_leaderboard_sub:'Interacciones registradas en los últimos 7 días',
     so_int_label:'interacciones', so_no_users:'No hay usuarios asignados a este sitio',
     so_chart_title:'Objetivos de Precio por Símbolo / Año', so_chart_sub:'Cada punto es un objetivo activo — pasa el cursor para ver detalles',
+    so_weekly_chart_title:'Volumen Semanal de Interacciones', so_weekly_chart_sub:'Barras = este año · Línea = mismo período del año pasado',
+    so_sample_data:'Datos de Muestra', so_wc_this_year:'Este Año (semanal)', so_wc_prior_year:'Año Anterior',
     lbl_percent_sold:'Porcentaje Vendido', lbl_assign_to:'Asignar A', opt_myself:'Yo mismo (sin asignar)', lbl_assigned_to:'Asignado A'
   },
   fr: {
@@ -3121,6 +3145,8 @@ const tr = {
     so_leaderboard:'Classement des représentants', so_leaderboard_sub:'Interactions enregistrées dans les 7 derniers jours',
     so_int_label:'interactions', so_no_users:'Aucun utilisateur assigné à ce site',
     so_chart_title:'Objectifs de prix par symbole / année', so_chart_sub:'Chaque point est un objectif actif — survolez pour les détails',
+    so_weekly_chart_title:'Volume hebdomadaire des interactions', so_weekly_chart_sub:'Barres = cette année · Ligne = même période l\'an dernier',
+    so_sample_data:'Données exemple', so_wc_this_year:'Cette année (hebdo)', so_wc_prior_year:'Année précédente',
     lbl_percent_sold:'Pourcentage vendu', lbl_assign_to:'Assigner à', opt_myself:'Moi-même (non assigné)', lbl_assigned_to:'Assigné à'
   },
   de: {
@@ -3218,6 +3244,8 @@ const tr = {
     so_leaderboard:'Rangliste der Vertreter', so_leaderboard_sub:'In den letzten 7 Tagen protokollierte Interaktionen',
     so_int_label:'Interaktionen', so_no_users:'Keine Benutzer diesem Standort zugewiesen',
     so_chart_title:'Preisziele nach Symbol / Jahr', so_chart_sub:'Jeder Punkt ist ein aktives Preisziel — für Details hover',
+    so_weekly_chart_title:'Wöchentliches Interaktionsvolumen', so_weekly_chart_sub:'Balken = dieses Jahr · Linie = gleicher Zeitraum Vorjahr',
+    so_sample_data:'Beispieldaten', so_wc_this_year:'Dieses Jahr (wöchentlich)', so_wc_prior_year:'Vorjahr',
     lbl_percent_sold:'Verkaufsanteil', lbl_assign_to:'Zuweisen an', opt_myself:'Ich selbst (nicht zugewiesen)', lbl_assigned_to:'Zugewiesen an'
   },
   pt: {
@@ -3315,6 +3343,8 @@ const tr = {
     so_leaderboard:'Classificação de Representantes', so_leaderboard_sub:'Interações registradas nos últimos 7 dias',
     so_int_label:'interações', so_no_users:'Nenhum usuário atribuído a este site',
     so_chart_title:'Metas de Preço por Símbolo / Ano', so_chart_sub:'Cada ponto é uma meta ativa — passe o mouse para detalhes',
+    so_weekly_chart_title:'Volume Semanal de Interações', so_weekly_chart_sub:'Barras = este ano · Linha = mesmo período do ano anterior',
+    so_sample_data:'Dados de Amostra', so_wc_this_year:'Este Ano (semanal)', so_wc_prior_year:'Ano Anterior',
     lbl_percent_sold:'Percentual Vendido', lbl_assign_to:'Atribuir A', opt_myself:'Eu mesmo (não atribuído)', lbl_assigned_to:'Atribuído A'
   },
   zh: {
@@ -3412,6 +3442,8 @@ const tr = {
     so_leaderboard:'代表排行榜', so_leaderboard_sub:'最近7天记录的互动次数',
     so_int_label:'次互动', so_no_users:'此站点无分配用户',
     so_chart_title:'按代码/年份划分的价格目标', so_chart_sub:'每个点代表一个活跃价格目标 — 悬停查看详情',
+    so_weekly_chart_title:'每周互动量', so_weekly_chart_sub:'柱形 = 今年 · 折线 = 去年同期',
+    so_sample_data:'示例数据', so_wc_this_year:'今年（按周）', so_wc_prior_year:'去年同期',
     lbl_percent_sold:'已售百分比', lbl_assign_to:'分配给', opt_myself:'自己（未分配）', lbl_assigned_to:'分配给'
   }
 };
@@ -3595,7 +3627,7 @@ function app() {
     priceTargets: [],
     sites: [],
     productLines: [],
-    soSite: '',
+    soSite: '', soUseSampleData: false,
     siteAdminNewSite: '', siteAdminEditSiteIdx: null, siteAdminEditSiteVal: '',
     siteAdminNewPL: '', siteAdminEditPLIdx: null, siteAdminEditPLVal: '',
     nukeCustomerPw: '', nukeCustomerError: '',
@@ -4110,6 +4142,80 @@ function app() {
       }).join('');
       const legend = commodities.map(c => `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280"><div style="width:10px;height:10px;border-radius:50%;background:${colorMap[c]};flex-shrink:0"></div>${c}</div>`).join('');
       return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${gridLines}${xTicks}${dots}${xLabels}</svg><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px">${legend}</div>`;
+    },
+
+    renderSoWeeklyChart() {
+      const ids = this._soCustIds();
+      const today = new Date();
+      const dow = (today.getDay() + 6) % 7; // 0=Mon
+      const thisMonday = new Date(today);
+      thisMonday.setDate(today.getDate() - dow);
+      thisMonday.setHours(0,0,0,0);
+
+      const weeks = [];
+      for (let i = 12; i >= 0; i--) {
+        const ws = new Date(thisMonday); ws.setDate(thisMonday.getDate() - i * 7);
+        const we = new Date(ws); we.setDate(ws.getDate() + 6);
+        weeks.push({
+          start: ws.toISOString().slice(0,10),
+          end: we.toISOString().slice(0,10),
+          label: ws.toLocaleDateString('en-US', {month:'short', day:'numeric'}),
+        });
+      }
+
+      const countInRange = (ints, ws, we) => ints.filter(i => i.date >= ws && i.date <= we).length;
+      const siteInts = this.interactions.filter(i => ids.has(parseInt(i.customerId)));
+
+      let thisY, prevY;
+      if (this.soUseSampleData) {
+        thisY = [3,5,4,7,6,9,5,8,10,7,12,9,11];
+        prevY = [5,6,4,8,7,10,6,9,8,11,9,10,8];
+      } else {
+        thisY = weeks.map(w => countInRange(siteInts, w.start, w.end));
+        prevY = weeks.map(w => {
+          const ps = new Date(w.start); ps.setFullYear(ps.getFullYear()-1);
+          const pe = new Date(w.end);   pe.setFullYear(pe.getFullYear()-1);
+          return countInRange(siteInts, ps.toISOString().slice(0,10), pe.toISOString().slice(0,10));
+        });
+      }
+
+      const W=620, H=210, PL=36, PT=16, PB=46, PR=16;
+      const cW=W-PL-PR, cH=H-PT-PB, n=weeks.length;
+      const maxV = Math.max(...thisY, ...prevY, 1);
+      const yS = v => PT + cH - (v/maxV)*cH;
+      const xC = i => PL + (i+0.5)*(cW/n);
+      const barW = (cW/n)*0.52;
+
+      const ticks = 4;
+      const grid = Array.from({length:ticks+1},(_,k)=>{
+        const v = Math.round((maxV/ticks)*k);
+        const y = yS(v);
+        return `<line x1="${PL}" y1="${y.toFixed(1)}" x2="${W-PR}" y2="${y.toFixed(1)}" stroke="#f3f4f6" stroke-width="1"/>
+                <text x="${PL-4}" y="${(y+3.5).toFixed(1)}" text-anchor="end" font-size="9" fill="#9ca3af">${v}</text>`;
+      }).join('');
+
+      const xLabels = weeks.map((w,i) => {
+        if (n <= 7 || i % 2 === 0)
+          return `<text x="${xC(i).toFixed(1)}" y="${H-PB+16}" text-anchor="middle" font-size="8.5" fill="#6b7280">${w.label}</text>`;
+        return '';
+      }).join('');
+
+      const bars = thisY.map((v,i) => {
+        const x = (xC(i)-barW/2).toFixed(1);
+        const y = yS(v).toFixed(1);
+        const h = Math.max(2, PT+cH-yS(v)).toFixed(1);
+        return `<rect x="${x}" y="${y}" width="${barW.toFixed(1)}" height="${h}" rx="2" fill="#16a34a" fill-opacity="0.82"/>`;
+      }).join('');
+
+      const lPath = prevY.map((v,i)=>`${i===0?'M':'L'} ${xC(i).toFixed(1)} ${yS(v).toFixed(1)}`).join(' ');
+      const lDots = prevY.map((v,i)=>`<circle cx="${xC(i).toFixed(1)}" cy="${yS(v).toFixed(1)}" r="3.5" fill="#6b7280" stroke="white" stroke-width="1.5"/>`).join('');
+
+      const legend = `<div style="display:flex;align-items:center;gap:20px;margin-top:10px;font-size:11px;color:#6b7280">
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;border-radius:2px;background:#16a34a;opacity:0.82;flex-shrink:0"></div>${this.t('so_wc_this_year')}</div>
+        <div style="display:flex;align-items:center;gap:5px"><svg width="24" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/><circle cx="12" cy="6" r="2.5" fill="#6b7280"/></svg>${this.t('so_wc_prior_year')}</div>
+      </div>`;
+
+      return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;overflow:visible">${grid}${bars}<path d="${lPath}" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="4,3"/>${lDots}${xLabels}</svg>${legend}`;
     },
 
     priSort(p) { return p==='high'?1:p==='medium'?2:3; },
