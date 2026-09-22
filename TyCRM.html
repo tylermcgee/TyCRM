@@ -4264,6 +4264,7 @@ function app() {
       _supa.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_OUT') { this.currentUser = null; this.view = 'login'; }
       });
+      this.$watch('view', () => { document.querySelector('main')?.scrollTo({ top: 0, behavior: 'instant' }); });
     },
     async _loadProfile(authUser) {
       const { data: profile } = await _supa.from('profiles').select('*').eq('id', authUser.id).single();
@@ -4338,6 +4339,7 @@ function app() {
       if (name==='addUser') this.forms.user = {id:null,name:'',email:'',role:'rep',password:'',productLines:[],sites:[]};
       if (name==='changePassword') this.forms.changePassword = {current:'',newPassword:'',confirm:''};
       this.modal = name;
+      this.$nextTick(() => { document.querySelectorAll('.overflow-y-auto').forEach(el => { el.scrollTop = 0; }); });
     },
 
     editCustomer(c) {
