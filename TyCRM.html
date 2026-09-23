@@ -1093,10 +1093,10 @@
       </div>
 
       <!-- Bottom placeholder sections -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div x-show="!selectedCustomer?.isLead" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         <!-- MyLDC Usage -->
-        <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <div x-show="!selectedCustomer?.isLead" class="bg-white rounded-xl border border-gray-200 p-5">
           <div class="flex items-center justify-between mb-1">
             <h3 class="font-semibold text-gray-900">MyLDC Usage</h3>
             <span class="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 rounded-full font-medium">Placeholder</span>
@@ -1106,7 +1106,7 @@
         </div>
 
         <!-- Open Contracts -->
-        <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <div x-show="!selectedCustomer?.isLead" class="bg-white rounded-xl border border-gray-200 p-5">
           <div class="flex items-center justify-between mb-1">
             <h3 class="font-semibold text-gray-900">Open Contracts</h3>
             <span class="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 rounded-full font-medium">Placeholder</span>
@@ -1135,7 +1135,7 @@
         </div>
 
         <!-- Transaction History -->
-        <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <div x-show="!selectedCustomer?.isLead" class="bg-white rounded-xl border border-gray-200 p-5">
           <div class="flex items-center justify-between mb-1">
             <h3 class="font-semibold text-gray-900">Transaction History</h3>
             <span class="text-xs bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 rounded-full font-medium">Placeholder</span>
