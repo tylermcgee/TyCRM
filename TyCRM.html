@@ -471,10 +471,16 @@
     <div x-show="view==='leads'" class="p-6 max-w-7xl mx-auto space-y-5">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div><h2 class="text-2xl font-bold text-gray-900" x-text="t('leads_title')"></h2><p class="text-gray-500 text-sm" x-text="t('leads_subtitle')"></p></div>
-        <button @click="openModal('addLead')" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          <span x-text="t('btn_add_lead')"></span>
-        </button>
+        <div class="flex items-center gap-2">
+          <button @click="exportLeadsCSV()" class="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium">
+            <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            <span x-text="t('export_excel')"></span>
+          </button>
+          <button @click="openModal('addLead')" class="flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span x-text="t('btn_add_lead')"></span>
+          </button>
+        </div>
       </div>
 
       <!-- Mobile: search/filter + cards -->
@@ -3996,6 +4002,14 @@ function app() {
         this.customerName(c.assignedTo)||'', (c.productLines||[]).join('; '), (c.sites||[]).join('; '), c.notes||''
       ]);
       this._downloadCSV('customers.csv', [header, ...rows]);
+    },
+    exportLeadsCSV() {
+      const header = ['Name','Type','Company','Email','Phone','Assigned Rep','Product Lines','Sites','Notes'];
+      const rows = this.filteredLeads.map(c => [
+        c.name, c.type, c.company||'', c.email||'', c.phone||'',
+        this.customerName(c.assignedTo)||'', (c.productLines||[]).join('; '), (c.sites||[]).join('; '), c.notes||''
+      ]);
+      this._downloadCSV('leads.csv', [header, ...rows]);
     },
     exportInteractionsCSV() {
       const header = ['Date','Customer','Type','Summary','Notes','Rep'];
