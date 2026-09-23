@@ -233,7 +233,7 @@
               <div class="min-w-0">
                 <span @click.stop="openCustomerProfileById(c.id); showGlobalDropdown=false; globalSearch=''"
                   class="text-sm font-medium text-gray-900 truncate hover:text-brand-700 hover:underline cursor-pointer"
-                  x-text="c.name"></span>
+                  x-text="c.name + (c.cinchId ? ' - ' + c.cinchId : '')"></span>
                 <p class="text-xs text-gray-500 truncate" x-text="(c.company ? c.company + ' · ' : '') + c.type + ((c.city||c.state) ? ' · ' + [c.city,c.state].filter(Boolean).join(', ') : (c.location ? ' · ' + c.location : ''))"></p>
               </div>
             </button>
