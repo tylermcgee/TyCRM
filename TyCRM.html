@@ -578,27 +578,6 @@
                   <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Phone</div>
                   <input x-model="ltfPhone" placeholder="Filter..." class="w-full border border-gray-200 rounded px-2 py-1 text-xs font-normal text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white" />
                 </th>
-                <th class="text-left px-3 py-2 min-w-[150px] border-r border-amber-100 align-top">
-                  <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Assigned Rep</div>
-                  <select x-model="ltfRep" class="w-full border border-gray-200 rounded px-2 py-1 text-xs font-normal text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white">
-                    <option value="">All</option>
-                    <template x-for="u in users" :key="u.id"><option :value="u.id" x-text="u.name"></option></template>
-                  </select>
-                </th>
-                <th class="text-left px-3 py-2 min-w-[170px] border-r border-amber-100 align-top">
-                  <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Product Lines</div>
-                  <select x-model="ltfProductLine" class="w-full border border-gray-200 rounded px-2 py-1 text-xs font-normal text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white">
-                    <option value="">All</option>
-                    <template x-for="pl in productLines" :key="pl"><option :value="pl" x-text="pl"></option></template>
-                  </select>
-                </th>
-                <th class="text-left px-3 py-2 min-w-[160px] border-r border-amber-100 align-top">
-                  <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5">Sites</div>
-                  <select x-model="ltfSite" class="w-full border border-gray-200 rounded px-2 py-1 text-xs font-normal text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500 bg-white">
-                    <option value="">All</option>
-                    <template x-for="site in sites" :key="site"><option :value="site" x-text="site"></option></template>
-                  </select>
-                </th>
                 <th class="px-3 py-2 min-w-[170px] align-top border-r-0">
                   <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1.5" x-text="t('tbl_actions')"></div>
                   <button @click="ltfName='';ltfType='';ltfCompany='';ltfPhone='';ltfRep='';ltfProductLine='';ltfSite=''" class="text-xs text-brand-600 hover:text-brand-800 font-medium whitespace-nowrap" x-text="t('clear_filters')"></button>
@@ -625,25 +604,6 @@
                       </a>
                     </div>
                   </td>
-                  <td class="px-3 py-2.5 whitespace-nowrap">
-                    <span :class="c.assignedTo ? 'text-brand-700 font-medium' : 'text-gray-300 italic'" class="text-xs" x-text="c.assignedTo ? userName(c.assignedTo) : 'Unassigned'"></span>
-                  </td>
-                  <td class="px-3 py-2.5">
-                    <div class="flex flex-wrap gap-1">
-                      <template x-for="pl in (c.productLines||[])" :key="pl">
-                        <span class="text-xs bg-brand-50 text-brand-700 border border-brand-200 px-1.5 py-0.5 rounded-full whitespace-nowrap" x-text="pl"></span>
-                      </template>
-                      <span x-show="!(c.productLines||[]).length" class="text-gray-300 text-xs">—</span>
-                    </div>
-                  </td>
-                  <td class="px-3 py-2.5">
-                    <div class="flex flex-wrap gap-1">
-                      <template x-for="site in (c.sites||[])" :key="site">
-                        <span class="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full whitespace-nowrap" x-text="site"></span>
-                      </template>
-                      <span x-show="!(c.sites||[]).length" class="text-gray-300 text-xs">—</span>
-                    </div>
-                  </td>
                   <td class="px-3 py-2.5">
                     <div class="flex gap-1.5 whitespace-nowrap">
                       <button @click="convertToCustomer(c.id)" class="text-xs px-2.5 py-1 border border-green-200 rounded-md hover:bg-green-50 text-green-700 font-medium transition-colors" x-text="t('btn_convert')"></button>
@@ -654,7 +614,7 @@
                 </tr>
               </template>
               <tr x-show="filteredLeads.length===0">
-                <td colspan="8" class="text-center py-12 text-gray-400" x-text="t('no_leads_found')"></td>
+                <td colspan="5" class="text-center py-12 text-gray-400" x-text="t('no_leads_found')"></td>
               </tr>
             </tbody>
           </table>
