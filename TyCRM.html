@@ -3932,7 +3932,7 @@ function app() {
       const visibleIds = new Set(this.visibleCustomers.map(c => c.id));
       return this.priceTargets.filter(p =>
         visibleIds.has(parseInt(p.customerId)) &&
-        (!this.ptStatusFilter || p.status === this.ptStatusFilter) &&
+        (!this.ptStatusFilter || (this.ptStatusFilter === 'active' ? ['active','soft','firm'].includes(p.status) : p.status === this.ptStatusFilter)) &&
         (!this.ptCommodityFilter || p.commodity === this.ptCommodityFilter)
       );
     },
