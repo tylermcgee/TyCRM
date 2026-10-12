@@ -1273,13 +1273,11 @@
                 <p class="text-sm text-gray-700" x-text="r.text"></p>
               </div>
             </div>
-            <div x-show="r.status==='new'" class="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-              <button @click="setRecStatus(r.id,'reviewed')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-50">✓ <span x-text="t('mark_reviewed')"></span></button>
-              <button @click="setRecStatus(r.id,'actioned')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-green-200 text-green-700 rounded-lg hover:bg-green-50">⚡ <span x-text="t('mark_actioned')"></span></button>
-              <button @click="setRecStatus(r.id,'dismissed')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50 ml-auto" x-text="t('btn_dismiss')"></button>
-            </div>
-            <div x-show="r.status==='reviewed'" class="flex gap-2 mt-4 pt-3 border-t border-gray-100">
-              <button @click="setRecStatus(r.id,'actioned')" class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-green-200 text-green-700 rounded-lg hover:bg-green-50">⚡ <span x-text="t('mark_actioned')"></span></button>
+            <div x-show="r.status==='new' || r.status==='reviewed'" class="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+              <button @click="logInteractionFromRec(r)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-brand-200 text-brand-700 rounded-lg hover:bg-brand-50">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                Log Interaction
+              </button>
               <button @click="setRecStatus(r.id,'dismissed')" class="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 text-gray-500 rounded-lg hover:bg-gray-50" x-text="t('btn_dismiss')"></button>
             </div>
           </div>
@@ -4801,6 +4799,24 @@ function app() {
     async setRecStatus(id, status) {
       await _supa.from('recommendations').update({ status }).eq('id', id);
       const r = this.recommendations.find(r => r.id === id); if (r) r.status = status;
+    },
+    logInteractionFromRec(rec) {
+      this.setRecStatus(rec.id, 'actioned');
+      this.forms.interaction = {
+        customerId: rec.customerId,
+        type: 'call',
+        summary: '',
+        notes: 'Created as follow up based on AI Recommendation.',
+        date: new Date().toISOString().slice(0, 10),
+        followUpCheck: false, followUpDays: 7,
+        commodity: '', priceTarget: '', symbolYear: '', volume: '',
+        season: 'spring', spring_plantingIntentCorn: 50,
+        spring_plantingStartDate: '', spring_soilMoisture: '',
+        summer_midseasonActivities: '', summer_cropHealthPests: '', summer_soilMoisture: '',
+        fall_grainMoisture: '', fall_harvestStartDate: '', fall_cropQuality: '', fall_estimatedYield: ''
+      };
+      this.modal = 'addInteraction';
+      this.$nextTick(() => { document.querySelectorAll('.overflow-y-auto').forEach(el => { el.scrollTop = 0; }); });
     },
 
     editPriceTarget(p) {
