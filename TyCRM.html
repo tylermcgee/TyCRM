@@ -3064,7 +3064,7 @@ const tr = {
     pt_title:'Price Targets', pt_subtitle:'Customer price targets and alerts', add_price_target:'Add Price Target',
     filter_active:'Active', filter_hit:'Hit', filter_cancelled:'Cancelled', filter_all_pt:'All', no_price_targets:'No price targets found.',
     tbl_symbol:'Symbol', tbl_price:'Price',
-    modal_log_interaction:'Log Interaction', lbl_customer:'Customer *', lbl_type:'Type *', lbl_date:'Date *', lbl_summary:'Summary *',
+    modal_log_interaction:'Log Interaction', lbl_customer:'Customer *', lbl_type:'Type *', lbl_date:'Date *', lbl_summary:'Summary',
     select_customer:'Select customer...', summary_placeholder:'Brief summary...',
     section_price_target_volume:'Price Target & Volume', lbl_price_target:'Price Target ($ / bu)',
     lbl_symbol_year:'Symbol / Year', lbl_volume:'Volume (bu)', price_target_placeholder:'e.g. 4.75',
@@ -3164,7 +3164,7 @@ const tr = {
     pt_title:'Objetivos de Precio', pt_subtitle:'Objetivos de precio y alertas de clientes', add_price_target:'Agregar Objetivo',
     filter_active:'Activos', filter_hit:'Alcanzados', filter_cancelled:'Cancelados', filter_all_pt:'Todos', no_price_targets:'No se encontraron objetivos.',
     tbl_symbol:'Símbolo', tbl_price:'Precio',
-    modal_log_interaction:'Registrar Interacción', lbl_customer:'Cliente *', lbl_type:'Tipo *', lbl_date:'Fecha *', lbl_summary:'Resumen *',
+    modal_log_interaction:'Registrar Interacción', lbl_customer:'Cliente *', lbl_type:'Tipo *', lbl_date:'Fecha *', lbl_summary:'Resumen',
     select_customer:'Seleccionar cliente...', summary_placeholder:'Breve resumen...',
     section_price_target_volume:'Objetivo de Precio y Volumen', lbl_price_target:'Precio Objetivo ($ / bu)',
     lbl_symbol_year:'Símbolo / Año', lbl_volume:'Volumen (bu)', price_target_placeholder:'ej. 4.75',
@@ -3264,7 +3264,7 @@ const tr = {
     pt_title:'Objectifs de prix', pt_subtitle:'Objectifs de prix et alertes clients', add_price_target:'Ajouter un objectif',
     filter_active:'Actifs', filter_hit:'Atteints', filter_cancelled:'Annulés', filter_all_pt:'Tous', no_price_targets:'Aucun objectif de prix trouvé.',
     tbl_symbol:'Symbole', tbl_price:'Prix',
-    modal_log_interaction:'Enregistrer une interaction', lbl_customer:'Client *', lbl_type:'Type *', lbl_date:'Date *', lbl_summary:'Résumé *',
+    modal_log_interaction:'Enregistrer une interaction', lbl_customer:'Client *', lbl_type:'Type *', lbl_date:'Date *', lbl_summary:'Résumé',
     select_customer:'Sélectionner un client...', summary_placeholder:'Bref résumé...',
     section_price_target_volume:'Objectif de prix et volume', lbl_price_target:'Prix cible ($ / bu)',
     lbl_symbol_year:'Symbole / Année', lbl_volume:'Volume (bu)', price_target_placeholder:'ex. 4,75',
@@ -3364,7 +3364,7 @@ const tr = {
     pt_title:'Preisziele', pt_subtitle:'Kundenpreisziele und Benachrichtigungen', add_price_target:'Preisziel hinzufügen',
     filter_active:'Aktiv', filter_hit:'Erreicht', filter_cancelled:'Abgebrochen', filter_all_pt:'Alle', no_price_targets:'Keine Preisziele gefunden.',
     tbl_symbol:'Symbol', tbl_price:'Preis',
-    modal_log_interaction:'Interaktion protokollieren', lbl_customer:'Kunde *', lbl_type:'Typ *', lbl_date:'Datum *', lbl_summary:'Zusammenfassung *',
+    modal_log_interaction:'Interaktion protokollieren', lbl_customer:'Kunde *', lbl_type:'Typ *', lbl_date:'Datum *', lbl_summary:'Zusammenfassung',
     select_customer:'Kunde auswählen...', summary_placeholder:'Kurze Zusammenfassung...',
     section_price_target_volume:'Preisziel & Volumen', lbl_price_target:'Preisziel ($ / bu)',
     lbl_symbol_year:'Symbol / Jahr', lbl_volume:'Volumen (bu)', price_target_placeholder:'z.B. 4.75',
@@ -3464,7 +3464,7 @@ const tr = {
     pt_title:'Metas de Preço', pt_subtitle:'Metas de preço e alertas de clientes', add_price_target:'Adicionar Meta de Preço',
     filter_active:'Ativas', filter_hit:'Atingidas', filter_cancelled:'Canceladas', filter_all_pt:'Todas', no_price_targets:'Nenhuma meta de preço encontrada.',
     tbl_symbol:'Símbolo', tbl_price:'Preço',
-    modal_log_interaction:'Registrar Interação', lbl_customer:'Cliente *', lbl_type:'Tipo *', lbl_date:'Data *', lbl_summary:'Resumo *',
+    modal_log_interaction:'Registrar Interação', lbl_customer:'Cliente *', lbl_type:'Tipo *', lbl_date:'Data *', lbl_summary:'Resumo',
     select_customer:'Selecionar cliente...', summary_placeholder:'Breve resumo...',
     section_price_target_volume:'Meta de Preço e Volume', lbl_price_target:'Preço Alvo ($ / bu)',
     lbl_symbol_year:'Símbolo / Ano', lbl_volume:'Volume (bu)', price_target_placeholder:'ex. 4,75',
@@ -3564,7 +3564,7 @@ const tr = {
     pt_title:'价格目标', pt_subtitle:'客户价格目标与提醒', add_price_target:'添加价格目标',
     filter_active:'活跃', filter_hit:'已触及', filter_cancelled:'已取消', filter_all_pt:'全部', no_price_targets:'未找到价格目标。',
     tbl_symbol:'代码', tbl_price:'价格',
-    modal_log_interaction:'记录互动', lbl_customer:'客户 *', lbl_type:'类型 *', lbl_date:'日期 *', lbl_summary:'摘要 *',
+    modal_log_interaction:'记录互动', lbl_customer:'客户 *', lbl_type:'类型 *', lbl_date:'日期 *', lbl_summary:'摘要',
     select_customer:'选择客户...', summary_placeholder:'简短摘要...',
     section_price_target_volume:'价格目标与数量', lbl_price_target:'目标价格（$/蒲式耳）',
     lbl_symbol_year:'代码 / 年份', lbl_volume:'数量（蒲式耳）', price_target_placeholder:'例：4.75',
@@ -4629,10 +4629,14 @@ function app() {
       const missing = [];
       if (!this.forms.interaction.customerId) missing.push('Customer');
       if (!this.forms.interaction.date) missing.push('Date');
-      if (!this.forms.interaction.summary) missing.push('Summary');
       if (missing.length) { this.validationError = 'Required: ' + missing.join(', '); return; }
       this.validationError = '';
       const f = this.forms.interaction;
+      if (!f.summary) {
+        const typeCap = f.type.charAt(0).toUpperCase() + f.type.slice(1);
+        const dateFormatted = new Date(f.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        f.summary = typeCap + ' logged on ' + dateFormatted + '.';
+      }
       const row = interactionToRow(f, this.currentUser.name);
       const { data: iData } = await _supa.from('interactions').insert(row).select().single();
       if (iData) this.interactions.unshift(rowToInteraction(iData));
