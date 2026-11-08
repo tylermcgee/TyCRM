@@ -3969,6 +3969,11 @@ function app() {
       a.download = filename;
       a.click();
     },
+    _esc(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    },
     exportCustomersCSV() {
       const header = ['Name','Type','Company','Email','Phone','Assigned Rep','Product Lines','Sites','Notes'];
       const rows = this.filteredCustomers.map(c => [
@@ -4359,7 +4364,7 @@ function app() {
         const v = minP + range * t, y = PT + cH * (1 - t);
         return `<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#f3f4f6" stroke-width="1"/><text x="${PL-4}" y="${y+3.5}" text-anchor="end" font-size="9" fill="#9ca3af">$${v.toFixed(2)}</text>`;
       }).join('');
-      const xLabels = symbols.map(s => `<text x="${xS(s)}" y="${H-PB+18}" text-anchor="middle" font-size="9" fill="#6b7280">${s}</text>`).join('');
+      const xLabels = symbols.map(s => `<text x="${xS(s)}" y="${H-PB+18}" text-anchor="middle" font-size="9" fill="#6b7280">${this._esc(s)}</text>`).join('');
       const xTicks = symbols.map(s => `<line x1="${xS(s)}" y1="${PT+cH}" x2="${xS(s)}" y2="${PT+cH+4}" stroke="#e5e7eb" stroke-width="1"/>`).join('');
       const commodities = [...new Set(pts.map(p => p.commodity))];
       const palette = ['#16a34a','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16'];
@@ -4367,9 +4372,9 @@ function app() {
       const dots = pts.map(p => {
         const sym = p.symbolYear || p.cropYear || 'N/A';
         const color = colorMap[p.commodity] || '#16a34a';
-        return `<circle cx="${xS(sym)}" cy="${yS(p.targetPrice)}" r="6" fill="${color}" fill-opacity="0.85" stroke="white" stroke-width="1.5"><title>${this.customerName(p.customerId)} — ${p.commodity} $${p.targetPrice.toFixed(2)}/bu (${sym})</title></circle>`;
+        return `<circle cx="${xS(sym)}" cy="${yS(p.targetPrice)}" r="6" fill="${color}" fill-opacity="0.85" stroke="white" stroke-width="1.5"><title>${this._esc(this.customerName(p.customerId))} — ${this._esc(p.commodity)} $${p.targetPrice.toFixed(2)}/bu (${this._esc(sym)})</title></circle>`;
       }).join('');
-      const legend = commodities.map(c => `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280"><div style="width:10px;height:10px;border-radius:50%;background:${colorMap[c]};flex-shrink:0"></div>${c}</div>`).join('');
+      const legend = commodities.map(c => `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280"><div style="width:10px;height:10px;border-radius:50%;background:${colorMap[c]};flex-shrink:0"></div>${this._esc(c)}</div>`).join('');
       return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${gridLines}${xTicks}${dots}${xLabels}</svg><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px">${legend}</div>`;
     },
 
